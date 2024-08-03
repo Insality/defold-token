@@ -1,0 +1,13 @@
+local token = require("token.token")
+
+
+function init(self)
+	token.init()
+
+	token.create_container("wallet")
+	pprint(token.get("wallet", "money"))
+	token.add("wallet", "money", 100)
+	pprint(token.get("wallet", "money"))
+
+	pprint(token.state)
+end

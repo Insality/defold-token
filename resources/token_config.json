@@ -1,0 +1,39 @@
+{
+	"tokens": {
+		"money": {
+			"default": 0,
+			"min": 0
+		},
+		"crystal": {
+			"default": 0,
+			"min": 0
+		},
+		"level": {
+			"default": 1,
+			"min": 1,
+			"max": 10
+		}
+	},
+	"groups": {
+		"reward_1": {
+			"money": 100,
+			"crystal": 10
+		},
+		"reward_2": {
+			"money": 200,
+			"crystal": 20
+		},
+		"level_up": {
+			"level": 1
+		},
+		"price_default_1": {
+			"crystal": 1
+		}
+	},
+	"lots": {
+		"shop_1": {
+			"price": "price_default_1",
+			"reward": "level_up"
+		}
+	}
+}
