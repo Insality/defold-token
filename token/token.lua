@@ -41,12 +41,11 @@ function M.reset_state()
 	}
 
 	M.runtime = {
+		token_wrappers = {}, -- Store token smart value wrappers here instead of SMART_CONTAINERS
 		timer_id = nil
 	}
 end
 M.reset_state()
-
-local SMART_CONTAINERS = {}
 
 M.UPDATE_DELAY = 1/60
 
@@ -90,24 +89,24 @@ local function get_containers_state()
 end
 
 
----@param container_id string
----@return token.container|nil
-local function get_smart_container(container_id)
-	return SMART_CONTAINERS[container_id]
-end
-
-
----Create token in save
+---Creates or gets a token wrapper for a specific token
 ---@param container_id string Container id
 ---@param token_id string Token id
----@param amount number|nil Amount of tokens
----@return token.smart_value
-local function create_token_in_save(container_id, token_id, amount)
-	local config = get_token_config(token_id)
+---@param token_amount number|nil The initial token amount (optional)
+---@return token.smart_value|nil
+local function create_token_wrapper(container_id, token_id, token_amount)
 	local container_data = get_containers_state()[container_id]
-	local token_amount = amount or container_data.tokens[token_id] or config.default
+	if not container_data then
+		token_internal.logger:error("No container with id", { container_id = container_id, token_id = token_id })
+		return nil
+	end
 
-	local smart_token = smart_value.create(config, token_amount)
+	M.runtime.token_wrappers[container_id] = M.runtime.token_wrappers[container_id] or {}
+
+	local config = get_token_config(token_id)
+	local amount = token_amount or container_data.tokens[token_id] or config.default
+
+	local smart_token = smart_value.create(config, amount)
 
 	smart_token:on_change(function(token, delta, reason)
 		container_data.tokens[token_id] = token:get()
@@ -118,6 +117,7 @@ local function create_token_in_save(container_id, token_id, amount)
 		M.on_token_visual_change:trigger(container_id, token_id, token:get_visual())
 	end)
 
+	M.runtime.token_wrappers[container_id][token_id] = smart_token
 	return smart_token
 end
 
@@ -129,17 +129,18 @@ local function get_token(container_id, token_id)
 	assert(container_id, "You should provide container_id")
 	assert(token_id, "You should provide token_id")
 
-	local container = get_smart_container(container_id)
-	if not container then
+	local container_data = get_containers_state()[container_id]
+	if not container_data then
 		token_internal.logger:error("No container with id", { container_id = container_id, token_id = token_id })
 		return nil
 	end
 
-	if not container[token_id] then
-		container[token_id] = create_token_in_save(container_id, token_id)
+	-- Make wrapper if needed
+	if not M.runtime.token_wrappers[container_id] or not M.runtime.token_wrappers[container_id][token_id] then
+		return create_token_wrapper(container_id, token_id)
 	end
 
-	return container[token_id]
+	return M.runtime.token_wrappers[container_id][token_id]
 end
 
 
@@ -181,7 +182,7 @@ end
 ---@param container_id string
 ---@return boolean is_exist
 function M.is_container_exist(container_id)
-	return (not not get_smart_container(container_id))
+	return get_containers_state()[container_id] ~= nil
 end
 
 
@@ -195,7 +196,7 @@ function M.create_container(container_id)
 
 	local data_containers = get_containers_state()
 	data_containers[container_id] = { tokens = {} }
-	SMART_CONTAINERS[container_id] = {}
+	M.runtime.token_wrappers[container_id] = {}
 
 	token_internal.logger:debug("Create token container", container_id)
 
@@ -209,7 +210,7 @@ function M.delete_container(container_id)
 	local data_containers = get_containers_state()
 
 	data_containers[container_id] = nil
-	SMART_CONTAINERS[container_id] = nil
+	M.runtime.token_wrappers[container_id] = nil
 end
 
 
@@ -223,7 +224,7 @@ function M.clear_container(container_id)
 
 	local containers = get_containers_state()
 	containers[container_id] = { tokens = {} }
-	SMART_CONTAINERS[container_id] = {}
+	M.runtime.token_wrappers[container_id] = {}
 end
 
 
@@ -464,6 +465,7 @@ end
 ---@param reason string|nil
 ---@return number @New token amount
 function M.set(container_id, token_id, amount, reason, visual_later)
+	-- This creates a wrapper if needed
 	return get_token(container_id, token_id):set(amount, reason, visual_later)
 end
 
@@ -487,14 +489,19 @@ end
 ---@param container_id string
 ---@return table<string, number>|nil Nil if container not exist
 function M.get_many(container_id)
-	local container = get_smart_container(container_id)
-	if not container then
+	local container_data = get_containers_state()[container_id]
+	if not container_data then
 		return nil
 	end
 
 	local tokens = {}
-	for id, token in pairs(container) do
-		tokens[id] = token:get()
+	local wrappers = M.runtime.token_wrappers[container_id]
+
+	-- All tokens should have wrappers now
+	if wrappers then
+		for id, token in pairs(wrappers) do
+			tokens[id] = token:get()
+		end
 	end
 
 	return tokens
@@ -731,17 +738,18 @@ end
 
 ---Load all current tokens into smart containers to work with them
 function M.load_token_state()
-	-- Reset state
-	SMART_CONTAINERS = {}
+	-- Reset token wrappers
+	M.runtime.token_wrappers = {}
 
 	-- Fill data from save
 	local data_containers = get_containers_state()
 	for container_id, data_container in pairs(data_containers) do
-		SMART_CONTAINERS[container_id] = SMART_CONTAINERS[container_id] or {}
+		-- Create container wrapper object
+		M.runtime.token_wrappers[container_id] = {}
 
+		-- Create wrappers for all existing tokens
 		for token_id, amount in pairs(data_container.tokens) do
-			local container = SMART_CONTAINERS[container_id]
-			container[token_id] = create_token_in_save(container_id, token_id, amount)
+			create_token_wrapper(container_id, token_id, amount)
 		end
 	end
 end
