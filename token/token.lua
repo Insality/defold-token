@@ -736,6 +736,33 @@ function M.init(token_config_or_path)
 end
 
 
+---Register tokens in the token system
+---@param tokens table<string, token.token_config_data> Table mapping token IDs to token config data
+function M.register_tokens(tokens)
+	for token_id, data in pairs(tokens) do
+		token_internal.register_token(token_id, data)
+	end
+end
+
+
+---Register token groups in the token system
+---@param groups table<string, table<string, number>> Table mapping group IDs to token IDs and amounts
+function M.register_token_groups(groups)
+	for group_id, tokens in pairs(groups) do
+		token_internal.register_token_group(group_id, tokens)
+	end
+end
+
+
+---Register lots in the token system
+---@param lots table<string, token.lot> Table mapping lot IDs to lot config
+function M.register_lots(lots)
+	for lot_id, lot in pairs(lots) do
+		token_internal.register_lot(lot_id, lot)
+	end
+end
+
+
 ---Load all current tokens into token wrappers
 function M.load_token_state()
 	-- Reset token wrappers

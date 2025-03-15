@@ -7,11 +7,11 @@ local M = {}
 
 ---@class token.token_restore_config
 ---@field is_enabled boolean
----@field last_restore_time number @Last restore time in seconds since epoch
+---@field last_restore_time number Last restore time in seconds since epoch
 ---@field disabled_time number|nil
----@field timer number @Timer in seconds for restore
----@field value number @Value for restore per timer
----@field max number @Max accumulated value for restore offline
+---@field timer number Timer in seconds for restore
+---@field value number Value for restore per timer
+---@field max number Max accumulated value for restore offline
 
 ---@class token.token_restore_param
 ---@field timer number -- Timer in seconds for restore
@@ -25,8 +25,8 @@ local M = {}
 ---@field max number|nil Max value
 
 ---@class token.lot
----@field price string @Group id
----@field reward string @Group id
+---@field price string Group id
+---@field reward string Group id
 
 ---Logger interface
 ---@class token.logger
@@ -112,6 +112,47 @@ function M.load_config(config_or_path)
 	end
 
 	return true
+end
+
+
+---Register tokens in the token system
+---@param token_id string Token id
+---@param data token.token_config_data Token config data
+---@return nil
+function M.register_token(token_id, data)
+	local tokens_config = M.CONFIG.TOKENS
+	tokens_config[token_id] = data
+	data.id = token_id
+end
+
+
+---Register token groups in the token system
+---@param group_id string Group id
+---@param tokens table<string, number> Table mapping token IDs to token config data
+---@return nil
+function M.register_token_group(group_id, tokens)
+	local token_groups_config = M.CONFIG.TOKEN_GROUPS
+	token_groups_config[group_id] = tokens
+end
+
+
+---Register lot in the token system
+---@param lot_id string Lot id
+---@param lot token.lot Lot config
+---@return nil
+function M.register_lot(lot_id, lot)
+	local lots_config = M.CONFIG.LOTS
+	lots_config[lot_id] = lot
+end
+
+
+---Register container in the token system
+---@param container_id string Container id
+---@param container token.container Container config
+---@return nil
+function M.register_container(container_id, container)
+	local containers_config = M.CONFIG.CONTAINERS
+	containers_config[container_id] = container
 end
 
 
