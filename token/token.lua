@@ -6,7 +6,8 @@ local token_internal = require("token.token_internal")
 local M = {}
 
 ---Persisted data
----@type token.state
+---@class token.state
+---@field containers table<string, token.container>
 M.state = nil
 
 ---@class token.event.on_token_change: event
@@ -43,7 +44,7 @@ M.UPDATE_DELAY = 1/60
 
 
 ---Set logger for token system
----@param logger_instance token.logger|nil
+---@param logger_instance token.logger|table|nil
 function M.set_logger(logger_instance)
 	token_internal.logger = logger_instance or token_internal.empty_logger
 end
@@ -66,19 +67,19 @@ end
 
 ---@return token.token_config_data
 local function get_token_config(token_id)
-	return token_internal.CONFIG_TOKENS[token_id] or {}
+	return token_internal.CONFIG.TOKENS[token_id] or {}
 end
 
 
 ---@return table<string, number>
 local function get_token_group_config(group_id)
-	return token_internal.CONFIG_TOKEN_GROUPS[group_id]
+	return token_internal.CONFIG.TOKEN_GROUPS[group_id]
 end
 
 
 ---@return token.lot
 local function get_token_lot_config(lot_id)
-	return token_internal.CONFIG_LOTS[lot_id]
+	return token_internal.CONFIG.LOTS[lot_id]
 end
 
 
@@ -467,11 +468,12 @@ end
 ---Get token amount from container
 ---@param container_id string
 ---@param token_id string
----@return number|nil @Nil if container not exist
-function M.get(container_id, token_id)
+---@param default_value any @Default value if container not exist
+---@return number @Token amount, default_value if container not exist
+function M.get(container_id, token_id, default_value)
 	local token = get_token(container_id, token_id)
 	if not token then
-		return nil
+		return default_value
 	end
 
 	return token:get()

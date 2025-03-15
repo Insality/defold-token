@@ -1,17 +1,17 @@
 local M = {}
 
+---@class token.config
+---@field tokens table<string, token.token_config_data>|nil @Key is token_id
+---@field groups table<string, table<string, number>>|nil @Key is group_id
+---@field lots table<string, token.lot>|nil @Key is lot_id
+---@field containers table<string, token.container>|nil @Key is container_id
+M.CONFIG = {
+	TOKENS = {},
+	TOKEN_GROUPS = {},
+	LOTS = {},
+	CONTAINERS = {}
+}
 
----@type table<string, token.token_config_data> @Key is token_id
-M.CONFIG_TOKENS = {}
-
----@type table<string, table<string, number>> @Key is group_id
-M.CONFIG_TOKEN_GROUPS = {}
-
----@type table<string, token.lot> @Key is lot_id
-M.CONFIG_LOTS = {}
-
----@type table<string, table<string, number>> @Key is container_id
-M.CONFIG_CONTAINERS = {}
 
 --- Use empty function to save a bit of memory
 local EMPTY_FUNCTION = function(_, message, context) end
@@ -64,13 +64,13 @@ function M.load_config(config_or_path)
 	end
 
 	local config = config_or_path --[[@as token.config]]
-	M.CONFIG_TOKENS = config_or_path.tokens or {}
-	M.CONFIG_TOKEN_GROUPS = config_or_path.groups or {}
-	M.CONFIG_LOTS = config_or_path.lots or {}
-	M.CONFIG_CONTAINERS = config_or_path.containers or {}
+	M.CONFIG.TOKENS = config_or_path.tokens or {}
+	M.CONFIG.TOKEN_GROUPS = config_or_path.groups or {}
+	M.CONFIG.LOTS = config_or_path.lots or {}
+	M.CONFIG.CONTAINERS = config_or_path.containers or {}
 
 	-- Autofill token id
-	for token, data in pairs(M.CONFIG_TOKENS) do
+	for token, data in pairs(M.CONFIG.TOKENS) do
 		data.id = token
 	end
 

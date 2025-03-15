@@ -968,8 +968,6 @@ token.set_logger(nil)
 ```
 
 
-
-
 ## Events
 
 **token.on_token_change**
