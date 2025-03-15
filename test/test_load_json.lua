@@ -1,7 +1,6 @@
 return function()
 	describe("Token Load JSON config", function()
-		---@type token
-		local token = {}
+		local token ---@type token
 		local WALLET_ID = "wallet"
 
 		before(function()

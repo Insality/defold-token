@@ -1,12 +1,11 @@
 return function()
-	---@type token
-	local token = {}
+	local token ---@type token
 
 	describe("Token Logger", function()
 		before(function()
 			token = require("token.token")
 		end)
-		
+
 		it("token Set logger", function()
 			local EMPTY_FUNCTION = function(_, message, context) end
 			local logger =  {
@@ -17,7 +16,6 @@ return function()
 				error = EMPTY_FUNCTION,
 			}
 			token.set_logger(logger)
-			assert(token.get_logger() == logger)
 		end)
 
 		it("Should handle error in callback", function()
@@ -32,7 +30,7 @@ return function()
 				error = function() called = true end,
 			}
 			token.set_logger(logger)
-			
+
 			local value = token.get("unknown_container", "some_token")
 			assert(called == true)
 			assert(value == nil)

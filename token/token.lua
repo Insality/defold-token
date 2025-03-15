@@ -2,24 +2,32 @@ local event = require("event.event")
 local smart_value = require("token.smart_value")
 local token_internal = require("token.token_internal")
 
+---The Defold Token module.
+---Used to manage all countable items in the game.
 ---@class token
 local M = {}
 
----Persisted data
+---Persisted data of token module
 ---@class token.state
 ---@field containers table<string, token.container>
 M.state = nil
 
+---Triggers when token amount was changed
+---Callback is fun(container_id: string, token_id: string, amount: number, reason: string|nil)
 ---@class token.event.on_token_change: event
 ---@field trigger fun(_, container_id: string, token_id: string, amount: number, reason: string|nil)
 ---@field subscribe fun(_, callback: fun(container_id: string, token_id: string, amount: number, reason: string|nil), _)
 M.on_token_change = event.create()
 
+---Triggers when token visual amount was changed
+---Callback is fun(container_id: string, token_id: string, amount: number)
 ---@class token.event.on_token_visual_change: event
 ---@field trigger fun(_, container_id: string, token_id: string, amount: number)
 ---@field subscribe fun(_, callback: fun(container_id: string, token_id: string, amount: number), _)
 M.on_token_visual_change = event.create()
 
+---Triggers when token restore config was changed
+---Callback is fun(container_id: string, token_id: string, config: token.token_restore_config)
 ---@class token.event.on_token_restore_change: event
 ---@field trigger fun(_, container_id: string, token_id: string, config: token.token_restore_config)
 ---@field subscribe fun(_, callback: fun(container_id: string, token_id: string, config: token.token_restore_config), _)
@@ -43,17 +51,10 @@ local SMART_CONTAINERS = {}
 M.UPDATE_DELAY = 1/60
 
 
----Set logger for token system
+---Customize the logging mechanism used by Token Module. You can use **Defold Log** library or provide a custom logger.
 ---@param logger_instance token.logger|table|nil
 function M.set_logger(logger_instance)
 	token_internal.logger = logger_instance or token_internal.empty_logger
-end
-
-
----Get current logger for token system
----@return token.logger
-function M.get_logger()
-	return token_internal.logger
 end
 
 
@@ -96,9 +97,10 @@ local function get_smart_container(container_id)
 end
 
 
----@param container_id string
----@param token_id string
----@param amount number|nil
+---Create token in save
+---@param container_id string Container id
+---@param token_id string Token id
+---@param amount number|nil Amount of tokens
 ---@return token.smart_value
 local function create_token_in_save(container_id, token_id, amount)
 	local config = get_token_config(token_id)
@@ -177,7 +179,7 @@ end
 
 ---Check if token container exist
 ---@param container_id string
----@return boolean
+---@return boolean is_exist
 function M.is_container_exist(container_id)
 	return (not not get_smart_container(container_id))
 end
@@ -185,7 +187,7 @@ end
 
 ---Create token container. If container already exist, do nothing
 ---@param container_id string
----@return boolean @True if container was created
+---@return boolean True if container was created
 function M.create_container(container_id)
 	if M.is_container_exist(container_id) then
 		return false
@@ -225,7 +227,7 @@ function M.clear_container(container_id)
 end
 
 
----Set restore config for token
+---Set restore config for token. You
 ---@param container_id string
 ---@param token_id string
 ---@param config token.token_restore_param
@@ -263,7 +265,7 @@ end
 ---Get restore config for token
 ---@param container_id string
 ---@param token_id string
----@return token.token_restore_config|nil @Nil if no config
+---@return token.token_restore_config|nil Nil if no config
 function M.get_restore_config(container_id, token_id)
 	local container = get_containers_state()[container_id]
 	if not container then
@@ -279,6 +281,7 @@ function M.get_restore_config(container_id, token_id)
 end
 
 
+---Set restore config enabled state
 ---@param container_id string
 ---@param token_id string
 ---@param is_enabled boolean
@@ -318,7 +321,7 @@ end
 ---Remove restore config for token
 ---@param container_id string
 ---@param token_id string
----@return boolean @True if config was removed
+---@return boolean True if config was removed
 function M.remove_restore_config(container_id, token_id)
 	local restore_config = get_containers_state()[container_id].restore_config
 
@@ -482,7 +485,7 @@ end
 
 ---Get all tokens from container
 ---@param container_id string
----@return table<string, number>|nil @Nil if container not exist
+---@return table<string, number>|nil Nil if container not exist
 function M.get_many(container_id)
 	local container = get_smart_container(container_id)
 	if not container then
@@ -668,7 +671,7 @@ end
 ---Get current time to next restore point
 ---@param container_id string
 ---@param token_id string
----@return number|nil @Nil if no restore config
+---@return number|nil Nil if no restore config
 function M.get_time_to_restore(container_id, token_id)
 	local config = M.get_restore_config(container_id, token_id)
 

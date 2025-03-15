@@ -1,7 +1,6 @@
 return function()
 	describe("Token Containers", function()
-		---@type token
-		local token = {}
+		local token ---@type token
 		local TEST_CONTAINER = "test_container"
 		local WALLET_ID = "wallet"
 

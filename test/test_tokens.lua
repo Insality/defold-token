@@ -8,8 +8,7 @@ end
 
 return function()
 	describe("Tokens", function()
-		---@type token
-		local token = {}
+		local token ---@type token
 
 		local TEST_CONTAINER = "test_container"
 		local WALLET_ID = "wallet"

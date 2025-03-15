@@ -2,8 +2,7 @@ local mock_time = require("deftest.mock.time")
 
 return function()
 	describe("Defold Token", function()
-		---@type token
-		local token = {}
+		local token ---@type token
 
 		local SAVED_STATE = nil
 		local TEST_CONTAINER = "test_container"

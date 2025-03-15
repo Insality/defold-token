@@ -93,6 +93,8 @@ function M:add(value, reason, visual_later)
 end
 
 
+---Sync visual debt of token
+---@return number The new visual debt of token
 function M:sync_visual()
 	local prev_value = self.visual_credit
 	self.visual_credit = 0
@@ -109,6 +111,9 @@ function M:sync_visual()
 end
 
 
+---Add visual debt to token
+---@param value number The amount of tokens to add
+---@return number The new visual debt of token
 function M:add_visual(value)
 	self.visual_credit = self.visual_credit - value
 
@@ -119,6 +124,8 @@ function M:add_visual(value)
 			end
 		end
 	end
+
+	return self:get() - self.visual_credit
 end
 
 
