@@ -10,7 +10,7 @@
 
 # Disclaimer
 
-The library in development stage. May be not fully tested and README may be not full. If you have any questions, please, create an issue. This library is an adoptation of [Token](https://github.com/Insality/defold-eva/blob/master/eva/modules/token.lua) module from my [Defold-Eva](https://github.com/Insality/defold-eva) library.
+The library in **development stage**. May be not fully tested and README may be not full. If you have any questions, please, create an issue. This library is an adoptation of [Token](https://github.com/Insality/defold-eva/blob/master/eva/modules/token.lua) module from my [Defold-Eva](https://github.com/Insality/defold-eva) library.
 
 
 # Token
@@ -37,7 +37,7 @@ Open your `game.project` file and add the following line to the dependencies fie
 **[Defold Event](https://github.com/Insality/defold-event)**
 
 ```
-https://github.com/Insality/defold-event/archive/refs/tags/5.zip
+https://github.com/Insality/defold-event/archive/refs/tags/11.zip
 ```
 
 **[Defold Token](https://github.com/Insality/defold-token/archive/refs/tags/1.zip)**
@@ -64,52 +64,6 @@ After that, select `Project ▸ Fetch Libraries` to update [library dependencies
 - **Container**: A collection of tokens.
 - **Token Group**: A group of tokens that can be managed together and have a group id.
 - **Token Lot**: A data with a price group id and reward group id. Can be used for shop items, for example.
-
-
-### Token Configuration File [optional]
-
-Create a configuration file for the Token module. Place your configuration file inside your [custom resources folder](https://defold.com/manuals/project-settings/#custom-resources) to ensure they are included in the build.
-
-The configuration file should be a JSON file with the following structure. Each field in token definition is optional, and the module will use default values if they are not provided.
-
-```json
-{
-	"tokens": {
-		"damage": {
-			"min": 1,
-			"default": 1
-		},
-
-		"money": {
-			"default": 100,
-			"max": 99999
-		}
-	},
-
-	"groups": {
-		"reward_1": {
-			"money": 100,
-			"exp": 10
-		},
-		"price_1": {
-			"crystal": 5
-		}
-	},
-
-	"lots": {
-		"shop_item_1": {
-			"price": "price_1",
-			"reward": "reward_1"
-		}
-	}
-}
-```
-
-When the configuration file is ready, you can initialize the `Token` module by calling the `token.init(config_path)` function. This function should be called at the beginning of the game to load the configuration file and initialize the Token module.
-
-```lua
-token.init("/resources/token_config.json")
-```
 
 
 ## API Reference
@@ -181,6 +135,7 @@ Read the [API Reference](API_REFERENCE.md) file to see the full API documentatio
 ## Use Cases
 
 Read the [Use Cases](USE_CASES.md) file to see several examples of how to use the this module in your Defold game development projects.
+
 
 ## License
 
