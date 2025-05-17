@@ -1,6 +1,7 @@
 local event = require("event.event")
 local smart_value = require("token.smart_value")
 local token_internal = require("token.token_internal")
+local token_debug_page = require("token.token_debug_page")
 
 ---The Defold Token module.
 ---Used to manage all countable items in the game.
@@ -588,6 +589,18 @@ function M.is_max(container_id, token_id)
 end
 
 
+---@param token_id string The unique identifier for the token
+---@return token.token_config_data|nil config The token config, or nil if the token doesn't exist
+function M.get_token_config(token_id)
+	local config = get_token_config(token_id)
+	if not config then
+		return nil
+	end
+
+	return config
+end
+
+
 ---Check if there are enough tokens to pay multiple costs
 ---@param container_id string The unique identifier for the container
 ---@param tokens table<string, number>|nil Table mapping token IDs to amounts to check
@@ -654,7 +667,7 @@ function M.get_infinity_time(container_id, token_id)
 
 	local end_timer = container.infinity_timers[token_id]
 	if end_timer then
-		return math.ceil(end_timer - M.get_time())
+		return math.max(0, math.ceil(end_timer - M.get_time()))
 	end
 
 	return 0
@@ -783,6 +796,7 @@ end
 
 
 ---Start periodic updates for token restore timers
+---@private
 function M.start_update()
 	if M.runtime.timer_id then
 		timer.cancel(M.runtime.timer_id)
@@ -794,6 +808,7 @@ end
 
 
 ---Update all tokens restore timers
+---@private
 function M.update()
 	local containers = get_containers_state()
 	for container_id, container in pairs(containers) do
@@ -806,6 +821,13 @@ function M.update()
 			end
 		end
 	end
+end
+
+
+---@param druid druid.instance
+---@param properties_panel druid.widget.properties_panel
+function M.render_properties_panel(druid, properties_panel)
+	token_debug_page.render_properties_panel(M, druid, properties_panel)
 end
 
 
