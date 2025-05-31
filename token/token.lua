@@ -798,12 +798,9 @@ end
 ---Start periodic updates for token restore timers
 ---@private
 function M.start_update()
-	if M.runtime.timer_id then
-		timer.cancel(M.runtime.timer_id)
-		M.runtime.timer_id = nil
+	if not M.runtime.timer_id then
+		M.runtime.timer_id = timer.delay(M.UPDATE_DELAY, true, M.update)
 	end
-
-	M.runtime.timer_id = timer.delay(M.UPDATE_DELAY, true, M.update)
 end
 
 
