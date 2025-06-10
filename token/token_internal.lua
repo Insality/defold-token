@@ -100,11 +100,10 @@ function M.load_config(config_or_path)
 		config_or_path = config
 	end
 
-	local config = config_or_path --[[@as token.config]]
-	M.CONFIG.TOKENS = config.tokens or {}
-	M.CONFIG.TOKEN_GROUPS = config.groups or {}
-	M.CONFIG.LOTS = config.lots or {}
-	M.CONFIG.CONTAINERS = config.containers or {}
+	M.CONFIG.TOKENS = config_or_path or {}
+	M.CONFIG.TOKEN_GROUPS = {}
+	M.CONFIG.LOTS = {}
+	M.CONFIG.CONTAINERS = {}
 
 	-- Autofill token id
 	for token, data in pairs(M.CONFIG.TOKENS) do
