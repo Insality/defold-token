@@ -13,7 +13,7 @@ function init(self)
 	})
 
 	-- Create container using new API
-	local wallet = token.create_container("player_wallet")
+	local wallet = token.container("player_wallet")
 
 	-- Get/set/add operations
 	pprint("Get gold:", wallet:get("gold"))

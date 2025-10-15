@@ -74,11 +74,11 @@ function M.set_logger(logger_instance)
 end
 
 
----Create or get a container
+---Get container instance, create if it doesn't exist
 ---@param container_id string Unique identifier for the container
 ---@param config_group string|nil Optional configuration group
 ---@return token.container Container instance
-function M.create_container(container_id, config_group)
+function M.container(container_id, config_group)
 	-- Return existing container if it exists
 	if M.containers[container_id] then
 		return M.containers[container_id]
@@ -102,14 +102,6 @@ function M.create_container(container_id, config_group)
 	logger:debug("Create token container", container_id)
 
 	return new_container
-end
-
-
----Get an existing container
----@param container_id string Unique identifier for the container
----@return token.container Container instance or nil if doesn't exist
-function M.get_container(container_id)
-	return M.containers[container_id]
 end
 
 

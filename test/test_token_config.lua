@@ -23,7 +23,7 @@ return function()
 		})
 
 		-- Create container AFTER registering tokens
-		wallet = token.create_container("wallet")
+		wallet = token.container("wallet")
 
 		local level = wallet:get("level")
 		local money = wallet:get("money")
@@ -76,7 +76,7 @@ return function()
 			})
 
 			-- Create container to check initial value
-			wallet = token.create_container("wallet1")
+			wallet = token.container("wallet1")
 			local initial_gold = wallet:get("gold")
 			assert(initial_gold == 100, "Initial gold should be 100, got " .. tostring(initial_gold))
 
@@ -90,7 +90,7 @@ return function()
 			})
 
 			-- Check that new container gets new default value
-			local wallet2 = token.create_container("wallet2")
+			local wallet2 = token.container("wallet2")
 			local new_gold = wallet2:get("gold")
 			assert(new_gold == 500, "New gold should be 500, got " .. tostring(new_gold))
 
@@ -186,8 +186,8 @@ return function()
 			}, "premium")
 
 			-- Create containers with different groups
-			local default_wallet = token.create_container("default_wallet")
-			local premium_wallet = token.create_container("premium_wallet", "premium")
+			local default_wallet = token.container("default_wallet")
+			local premium_wallet = token.container("premium_wallet", "premium")
 
 			local default_coins = default_wallet:get("coins")
 			local premium_coins = premium_wallet:get("coins")
@@ -213,7 +213,7 @@ return function()
 				}
 			}, "vip")
 
-			local wallet1 = token.create_container("vip_wallet1", "vip")
+			local wallet1 = token.container("vip_wallet1", "vip")
 			assert(wallet1:get("energy") == 50)
 
 			-- Overwrite vip config
@@ -224,7 +224,7 @@ return function()
 				}
 			}, "vip")
 
-			local wallet2 = token.create_container("vip_wallet2", "vip")
+			local wallet2 = token.container("vip_wallet2", "vip")
 			assert(wallet2:get("energy") == 100, "New VIP wallet should have 100 energy")
 			assert(wallet1:get("energy") == 50, "Existing VIP wallet should keep 50 energy")
 		end)
@@ -243,7 +243,7 @@ return function()
 				}
 			})
 
-			wallet = token.create_container("test_wallet")
+			wallet = token.container("test_wallet")
 			wallet:add_group("bonus")
 
 			assert(wallet:get("gold") == 100)

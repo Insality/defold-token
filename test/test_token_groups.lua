@@ -48,8 +48,8 @@ return function()
 			token_groups = CONFIG_TOKEN_GROUPS,
 			lots = CONGIG_LOTS
 		})
-		test_container = token.create_container(TEST_CONTAINER_ID)
-		wallet = token.create_container(WALLET_ID)
+		test_container = token.container(TEST_CONTAINER_ID)
+		wallet = token.container(WALLET_ID)
 
 		mock_time.mock()
 		mock_time.set(0)

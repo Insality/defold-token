@@ -17,8 +17,8 @@ return function()
 		token = require("token.token") --[[@as token]]
 		token.reset_state()
 		token.init({})
-		test_container = token.create_container(TEST_CONTAINER_ID)
-		wallet = token.create_container(WALLET_ID)
+		test_container = token.container(TEST_CONTAINER_ID)
+		wallet = token.container(WALLET_ID)
 
 		mock_time.mock()
 		mock_time.set(0)

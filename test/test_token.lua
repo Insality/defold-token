@@ -21,7 +21,7 @@ return function()
 		token.reset_state()
 		token.init()
 		token.register_tokens(CONFIG_TOKEN.tokens)
-		test_container = token.create_container(TEST_CONTAINER_ID)
+		test_container = token.container(TEST_CONTAINER_ID)
 
 		mock_time.mock()
 		mock_time.set(0)

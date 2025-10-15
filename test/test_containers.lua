@@ -13,8 +13,8 @@ return function()
 		token.reset_state()
 		token.set_logger(nil)
 		token.init()
-		test_container = token.create_container(TEST_CONTAINER_ID)
-		wallet = token.create_container(WALLET_ID)
+		test_container = token.container(TEST_CONTAINER_ID)
+		wallet = token.container(WALLET_ID)
 	end)
 
 		it("Should work add tokens from other container", function()
@@ -35,7 +35,7 @@ return function()
 			assert(test_container:get("energy") == 10)
 
 			token.clear_container(TEST_CONTAINER_ID)
-			test_container = token.get_container(TEST_CONTAINER_ID)
+			test_container = token.container(TEST_CONTAINER_ID)
 			assert(test_container:get("money") == 0)
 			assert(test_container:get("energy") == 0)
 
@@ -49,7 +49,7 @@ return function()
 			assert(test_container:get("energy") == 10)
 
 			token.delete_container(TEST_CONTAINER_ID)
-			local deleted_container = token.get_container(TEST_CONTAINER_ID)
+			local deleted_container = token.container(TEST_CONTAINER_ID)
 			assert(deleted_container == nil)
 
 			assert(not token.is_container_exist(TEST_CONTAINER_ID))

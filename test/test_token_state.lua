@@ -30,7 +30,7 @@ return function()
 
 		token.init()
 		token.register_tokens(CONFIG_TOKEN.tokens)
-		wallet = token.create_container(WALLET_ID)
+		wallet = token.container(WALLET_ID)
 
 		mock_time.mock()
 		mock_time.set(0)

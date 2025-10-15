@@ -43,7 +43,7 @@ return function()
 
 		assert(not debug_called, "Debug should not be called yet")
 
-		test_container = token.create_container("test_wallet")
+		test_container = token.container("test_wallet")
 
 		assert(debug_called, "Debug should be called when creating container")
 	end)
@@ -64,7 +64,7 @@ return function()
 	it("Should call error when using non-existing token group", function()
 		token.set_logger(create_test_logger())
 		token.init()
-		test_container = token.create_container("test_wallet")
+		test_container = token.container("test_wallet")
 
 		reset_logger_state()
 		assert(not error_called, "Error should not be called yet")
@@ -92,7 +92,7 @@ return function()
 	it("Should call error when resetting non-existing restore timer", function()
 		token.set_logger(create_test_logger())
 		token.init()
-		test_container = token.create_container("test_wallet")
+		test_container = token.container("test_wallet")
 
 		reset_logger_state()
 		assert(not error_called, "Error should not be called yet")
@@ -106,7 +106,7 @@ return function()
 		it("Should work without logger set", function()
 			-- No logger set, operations should still work
 			token.init()
-			test_container = token.create_container("test_wallet")
+			test_container = token.container("test_wallet")
 
 			-- These should not crash even without logger
 			test_container:add("money", 100)
@@ -125,12 +125,12 @@ return function()
 			token.init()
 
 			reset_logger_state()
-			token.create_container("wallet1")
+			token.container("wallet1")
 			assert(debug_called, "First logger should be called")
 
 			reset_logger_state()
 			token.set_logger(logger2)
-			token.create_container("wallet2")
+			token.container("wallet2")
 			assert(debug_called, "Second logger should be called")
 		end)
 	end)
