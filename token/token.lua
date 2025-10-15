@@ -1,9 +1,9 @@
 local event = require("event.event")
-local logger = require("token.token.logger")
-local state = require("token.token.state")
-local config = require("token.token.config")
-local container = require("token.token.container")
-local restore = require("token.token.restore")
+local logger = require("token.internal.logger")
+local state = require("token.internal.state")
+local config = require("token.internal.config")
+local container = require("token.internal.container")
+local restore = require("token.internal.restore")
 
 ---The Defold Token module.
 ---Used to manage all countable items in the game.
@@ -243,10 +243,10 @@ end
 
 
 ---Initialize the token system with configuration (optional)
----@param token_config_or_path token.config|string|nil Lua table or path to token config. Example: "/resources/tokens.json"
-function M.init(token_config_or_path)
-	if token_config_or_path then
-		M.load_config(token_config_or_path)
+---@param tokens_config_or_path table<string, token.token_config_data>|string|nil Lua table or path to token config. Example: "/resources/tokens.json"
+function M.init(tokens_config_or_path)
+	if tokens_config_or_path then
+		M.load_config(tokens_config_or_path)
 	end
 
 	M.containers = {}

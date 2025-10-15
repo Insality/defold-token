@@ -1,8 +1,8 @@
 --- Token restore timer plugin
 --- Provides automatic token restoration over time
 
-local time = require("token.token.time")
-local logger = require("token.token.logger")
+local time = require("token.internal.time")
+local logger = require("token.internal.logger")
 
 ---@class token.token_restore_config
 ---@field is_enabled boolean

@@ -2,8 +2,8 @@
 --- Manages token configs, groups, and lots
 
 ---@class token.config
----@field token_configs table<string, table<string, token.token_config_data>>|nil
----@field token_groups table<string, table<string, number>>|nil
+---@field tokens table<string, table<string, token.token_config_data>>|nil
+---@field groups table<string, table<string, number>>|nil
 ---@field lots table<string, token.lot>|nil
 
 ---@class token.token_config_data
@@ -39,22 +39,11 @@ M.lots = {}
 ---Load configuration from a table
 ---@param config token.config Configuration table with token_configs, token_groups, and lots
 function M.load_config(config)
-	-- Support new format
-	if config.token_configs then
-		M.token_configs = config.token_configs
-	end
+	M.token_configs = config.tokens or M.token_configs
+	M.token_groups = config.groups or M.token_groups
+	M.lots = config.lots or M.lots
 
-	-- Support both token_groups and groups
-	if config.token_groups then
-		M.token_groups = config.token_groups
-	end
-
-	if config.lots then
-		M.lots = config.lots
-	end
-
-	-- Autofill token ids
-	for config_group, tokens in pairs(M.token_configs) do
+	for _, tokens in pairs(M.token_configs) do
 		for token_id, data in pairs(tokens) do
 			data.id = token_id
 		end

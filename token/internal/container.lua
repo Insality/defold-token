@@ -2,11 +2,11 @@
 --- Manages a collection of tokens with all operations
 
 local event = require("event.event")
-local logger = require("token.token.logger")
-local value = require("token.token.value")
-local config = require("token.token.config")
-local restore = require("token.token.restore")
-local infinity = require("token.token.infinity")
+local logger = require("token.internal.logger")
+local value = require("token.internal.value")
+local config = require("token.internal.config")
+local restore = require("token.internal.restore")
+local infinity = require("token.internal.infinity")
 
 ---@class token.container
 ---@field id string Container unique identifier

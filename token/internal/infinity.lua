@@ -1,7 +1,7 @@
 --- Token infinity timer plugin
 --- Provides infinity state where tokens can be spent without limit
 
-local time = require("token.token.time")
+local time = require("token.internal.time")
 
 local M = {}
 
