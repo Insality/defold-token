@@ -1,19 +1,22 @@
 return function()
 	describe("Token Load JSON config", function()
 		local token ---@type token
+		local wallet ---@type token.container
 		local WALLET_ID = "wallet"
 
-		before(function()
-			token = require("token.token")
-			token.reset_state()
-		end)
+	before(function()
+		token = require("token.token")
+		token.reset_state()
+	end)
 
 		it("Load token config from resources JSON file", function()
-			token.init("/resources/token_config.json")
-			token.create_container(WALLET_ID)
+			token.init("/test/resources/token_config.json")
+			wallet = token.create_container(WALLET_ID)
 
-			assert(token.get(WALLET_ID, "money") == 0)
-			assert(token.get(WALLET_ID, "level") == 1)
+			local money = wallet:get("money")
+			local level = wallet:get("level")
+			assert(money == 0, "money is " .. tostring(money) .. ", expected 0")
+			assert(level == 1, "level is " .. tostring(level) .. ", expected 1")
 
 			local group_1 = token.get_token_group("reward_1")
 			assert(group_1)

@@ -1,54 +1,58 @@
 return function()
 	describe("Token Containers", function()
 		local token ---@type token
-		local TEST_CONTAINER = "test_container"
+		local test_container ---@type token.container
+		local wallet ---@type token.container
+
+		local TEST_CONTAINER_ID = "test_container"
 		local WALLET_ID = "wallet"
 
-		before(function()
-			token = require("token.token")
+	before(function()
+		token = require("token.token")
 
-			token.reset_state()
-			token.set_logger(nil)
-			token.init({})
-			token.create_container(TEST_CONTAINER)
-			token.create_container(WALLET_ID)
-		end)
+		token.reset_state()
+		token.set_logger(nil)
+		token.init()
+		test_container = token.create_container(TEST_CONTAINER_ID)
+		wallet = token.create_container(WALLET_ID)
+	end)
 
 		it("Should work add tokens from other container", function()
-			assert(token.get(TEST_CONTAINER, "money") == 0)
-			token.add(TEST_CONTAINER, "money", 10)
-			assert(token.get(TEST_CONTAINER, "money") == 10)
+			assert(test_container:get("money") == 0)
+			test_container:add("money", 10)
+			assert(test_container:get("money") == 10)
 
-			assert(token.get(WALLET_ID, "money") == 0)
-			local tokens = token.get_many(TEST_CONTAINER)
-			token.add_many(WALLET_ID, tokens)
-			assert(token.get(WALLET_ID, "money") == 10)
+			assert(wallet:get("money") == 0)
+			local tokens = test_container:get_many()
+			wallet:add_many(tokens)
+			assert(wallet:get("money") == 10)
 		end)
 
 		it("Should clear container", function()
-			token.add(TEST_CONTAINER, "money", 10)
-			token.add(TEST_CONTAINER, "energy", 10)
-			assert(token.get(TEST_CONTAINER, "money") == 10)
-			assert(token.get(TEST_CONTAINER, "energy") == 10)
+			test_container:add("money", 10)
+			test_container:add("energy", 10)
+			assert(test_container:get("money") == 10)
+			assert(test_container:get("energy") == 10)
 
-			token.clear_container(TEST_CONTAINER)
-			assert(token.get(TEST_CONTAINER, "money") == 0)
-			assert(token.get(TEST_CONTAINER, "energy") == 0)
+			token.clear_container(TEST_CONTAINER_ID)
+			test_container = token.get_container(TEST_CONTAINER_ID)
+			assert(test_container:get("money") == 0)
+			assert(test_container:get("energy") == 0)
 
-			assert(token.is_container_exist(TEST_CONTAINER))
+			assert(token.is_container_exist(TEST_CONTAINER_ID))
 		end)
 
 		it("Should delete container", function()
-			token.add(TEST_CONTAINER, "money", 10)
-			token.add(TEST_CONTAINER, "energy", 10)
-			assert(token.get(TEST_CONTAINER, "money") == 10)
-			assert(token.get(TEST_CONTAINER, "energy") == 10)
+			test_container:add("money", 10)
+			test_container:add("energy", 10)
+			assert(test_container:get("money") == 10)
+			assert(test_container:get("energy") == 10)
 
-			token.delete_container(TEST_CONTAINER)
-			assert(token.get(TEST_CONTAINER, "money") == nil)
-			assert(token.get(TEST_CONTAINER, "energy") == nil)
+			token.delete_container(TEST_CONTAINER_ID)
+			local deleted_container = token.get_container(TEST_CONTAINER_ID)
+			assert(deleted_container == nil)
 
-			assert(not token.is_container_exist(TEST_CONTAINER))
+			assert(not token.is_container_exist(TEST_CONTAINER_ID))
 		end)
 	end)
 end

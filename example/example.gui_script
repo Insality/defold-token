@@ -2,12 +2,37 @@ local token = require("token.token")
 
 
 function init(self)
-	token.init()
+	-- Optional: load configuration
+	token.init({
+		token_configs = {
+			default = {
+				gold = { max = 999999, default = 0 },
+				gems = { max = 99999, default = 0 }
+			}
+		}
+	})
 
-	token.create_container("wallet")
-	pprint(token.get("wallet", "money"))
-	token.add("wallet", "money", 100)
-	pprint(token.get("wallet", "money"))
+	-- Create container using new API
+	local wallet = token.create_container("player_wallet")
 
-	pprint(token.state)
+	-- Get/set/add operations
+	pprint("Get gold:", wallet:get("gold"))
+	wallet:add("gold", 500)
+	pprint("After add:", wallet:get("gold"))
+
+	-- Container operations
+	wallet:set("gems", 10)
+	wallet:pay("gems", 3)
+	pprint("Gems after pay:", wallet:get("gems"))
+
+	-- Check operations
+	if wallet:is_enough("gold", 100) then
+		print("Have enough gold!")
+	end
+
+	-- Multiple tokens
+	wallet:add_many({ gold = 100, gems = 5 })
+	pprint("All tokens:", wallet:get_many())
+
+	pprint(token:get_state())
 end

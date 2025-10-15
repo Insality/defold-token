@@ -10,12 +10,12 @@ function M.render_properties_panel(token, druid, properties_panel)
 
 	-- Show containers
 	properties_panel:add_text(function(text)
-		local containers = token.state.containers
+		local containers = token.get_state().containers
 		text:set_text_property("Container Count")
 		text:set_text_value(tostring(M.token_count_containers(containers)))
 	end)
 
-	for container_id, container in pairs(token.state.containers) do
+	for container_id, container in pairs(token.get_state().containers) do
 		properties_panel:add_button(function(button)
 			local token_count = M.token_count_tokens(container.tokens)
 			button:set_text_property(container_id)
@@ -29,7 +29,7 @@ end
 
 
 ---Count the number of containers
----@param containers table<string, token.container>
+---@param containers table<string, token.container_data>
 ---@return number
 function M.token_count_containers(containers)
 	local count = 0
@@ -70,7 +70,7 @@ function M.render_container_page(token, container_id, properties_panel)
 		end)
 	end)
 
-	local container = token.state.containers[container_id]
+	local container = token.get_state().containers[container_id]
 	-- Show tokens
 	if container.tokens then
 		properties_panel:add_text(function(text)
@@ -81,11 +81,12 @@ function M.render_container_page(token, container_id, properties_panel)
 		for token_id, _ in pairs(container.tokens) do
 			-- Token actions
 			properties_panel:add_button(function(button)
-				local amount = token.get(container_id, token_id, 0)
+				local amount = token.get_container(container_id):get(token_id, 0)
 				button:set_text_property(token_id)
 				button:set_text_button(amount)
 				button.button.on_click:subscribe(function()
-					M.render_token_details_page(token, container_id, token_id, properties_panel)
+					local token_container = token.get_container(container_id)
+					M.render_token_details_page(token_container, token_id, properties_panel)
 				end)
 			end)
 		end
@@ -94,29 +95,28 @@ end
 
 
 ---Render the details page for a specific token
----@param token token
----@param container_id string
+---@param container token.container
 ---@param token_id string
 ---@param properties_panel druid.widget.properties_panel
-function M.render_token_details_page(token, container_id, token_id, properties_panel)
+function M.render_token_details_page(container, token_id, properties_panel)
 	properties_panel:next_scene()
 	properties_panel:set_header("Token: " .. token_id)
 
 	-- Amount
 	properties_panel:add_input(function(input)
-		local amount = token.get(container_id, token_id, 0)
+		local amount = container:get(token_id, 0)
 		input:set_text_property("Amount")
 		input:set_text_value(tostring(amount))
 		input.on_change_value:subscribe(function(value)
 			local new_amount = tonumber(value) or 0
-			token.set(container_id, token_id, new_amount, "debug")
+			container:set(token_id, new_amount, "debug")
 			properties_panel:set_dirty()
 		end)
 	end)
 
 	-- Visual amount
 	properties_panel:add_text(function(text)
-		local visual_amount = token.get_visual(container_id, token_id)
+		local visual_amount = container:get_visual(token_id)
 		text:set_text_property("Visual Amount")
 		text:set_text_value(tostring(visual_amount))
 	end)
@@ -126,21 +126,21 @@ function M.render_token_details_page(token, container_id, token_id, properties_p
 		button:set_text_property("Visual")
 		button:set_text_button("Sync")
 		button.button.on_click:subscribe(function()
-			token.sync_visual(container_id, token_id)
+			container:sync_visual(token_id)
 			properties_panel:set_dirty()
 		end)
 	end)
 
 	-- Total sum
 	properties_panel:add_text(function(text)
-		local total_sum = token.get_total_sum(container_id, token_id)
+		local total_sum = container:get_total_sum(token_id)
 		text:set_text_property("Total Acquired")
 		text:set_text_value(tostring(total_sum))
 	end)
 
 	-- Infinity time
 	properties_panel:add_text(function(text)
-		local infinity_time = token.get_infinity_time(container_id, token_id)
+		local infinity_time = container:get_infinity_time(token_id)
 		text:set_text_property("Infinity Time")
 		text:set_text_value(tostring(infinity_time) .. " sec")
 	end)
@@ -153,7 +153,7 @@ function M.render_token_details_page(token, container_id, token_id, properties_p
 		input.on_change_value:subscribe(function(value)
 			local time = tonumber(value) or 0
 			if time > 0 then
-				token.add_infinity_time(container_id, token_id, time)
+				container:add_infinity_time(token_id, time)
 				properties_panel:set_dirty()
 			end
 			input:set_text_value("")
@@ -165,7 +165,7 @@ function M.render_token_details_page(token, container_id, token_id, properties_p
 		button:set_text_property("Add")
 		button:set_text_button("+1")
 		button.button.on_click:subscribe(function()
-			token.add(container_id, token_id, 1, "debug")
+			container:add(token_id, 1, "debug")
 			properties_panel:set_dirty()
 		end)
 	end)
@@ -175,7 +175,7 @@ function M.render_token_details_page(token, container_id, token_id, properties_p
 		button:set_text_property("Pay")
 		button:set_text_button("-1")
 		button.button.on_click:subscribe(function()
-			token.pay(container_id, token_id, 1, "debug")
+			container:pay(token_id, 1, "debug")
 			properties_panel:set_dirty()
 		end)
 	end)
