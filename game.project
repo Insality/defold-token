@@ -31,3 +31,6 @@ info_block_length = 18
 info_block = %levelshort[%logger
 message_block = ]: %message %context %tab<%function>
 
+[input]
+game_binding = /builtins/input/all.input_bindingc
+

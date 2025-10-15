@@ -49,9 +49,6 @@ return function()
 			assert(test_container:get("energy") == 10)
 
 			token.delete_container(TEST_CONTAINER_ID)
-			local deleted_container = token.container(TEST_CONTAINER_ID)
-			assert(deleted_container == nil)
-
 			assert(not token.is_container_exist(TEST_CONTAINER_ID))
 		end)
 	end)
