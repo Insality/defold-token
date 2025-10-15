@@ -79,6 +79,7 @@ end
 
 
 ---Get token instance
+---@private
 ---@param token_id string
 ---@return token.value
 function M:token(token_id)
@@ -316,66 +317,62 @@ end
 
 
 ---Add tokens from a token group to container
----@param container token.container
 ---@param group_id string Token group id
 ---@param reason string|nil Optional reason for tracking
 ---@param visual_later boolean|nil If true, visual update will be delayed
-function M.add_group(container, group_id, reason, visual_later)
+function M:add_group(group_id, reason, visual_later)
 	local tokens = config.get_group(group_id)
 	if not tokens then
 		logger:error("No token group with id", group_id)
 		return
 	end
 
-	container:add_many(tokens, reason, visual_later)
+	self:add_many(tokens, reason, visual_later)
 end
 
 
 ---Set tokens in container to match a token group
----@param container token.container
 ---@param group_id string Token group id
 ---@param reason string|nil Optional reason for tracking
 ---@param visual_later boolean|nil If true, visual update will be delayed
-function M.set_group(container, group_id, reason, visual_later)
+function M:set_group(group_id, reason, visual_later)
 	local tokens = config.get_group(group_id)
 	if not tokens then
 		logger:error("No token group with id", group_id)
 		return
 	end
 
-	container:set_many(tokens, reason, visual_later)
+	self:set_many(tokens, reason, visual_later)
 end
 
 
 ---Pay tokens from container using a token group as cost
----@param container token.container
 ---@param group_id string Token group id
 ---@param reason string|nil Optional reason for tracking
 ---@param visual_later boolean|nil If true, visual update will be delayed
 ---@return boolean True if payment was successful, false otherwise
-function M.pay_group(container, group_id, reason, visual_later)
+function M:pay_group(group_id, reason, visual_later)
 	local tokens = config.get_group(group_id)
 	if not tokens then
 		logger:error("No token group with id", group_id)
 		return false
 	end
 
-	return container:pay_many(tokens, reason, visual_later)
+	return self:pay_many(tokens, reason, visual_later)
 end
 
 
 ---Check if container has enough tokens to pay for a token group
----@param container token.container
 ---@param group_id string Token group id
 ---@return boolean True if enough tokens are available, false otherwise
-function M.is_enough_group(container, group_id)
+function M:is_enough_group(group_id)
 	local tokens = config.get_group(group_id)
 	if not tokens then
 		logger:error("No token group with id", group_id)
 		return false
 	end
 
-	return container:is_enough_many(tokens)
+	return self:is_enough_many(tokens)
 end
 
 
