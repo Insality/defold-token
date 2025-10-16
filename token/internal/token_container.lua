@@ -2,11 +2,11 @@
 --- Manages a collection of tokens with all operations
 
 local event = require("event.event")
-local logger = require("token.internal.logger")
-local value = require("token.internal.value")
-local config = require("token.internal.config")
-local restore = require("token.internal.restore")
-local infinity = require("token.internal.infinity")
+local logger = require("token.internal.token_logger")
+local value = require("token.internal.token_value")
+local config = require("token.internal.token_config")
+local restore = require("token.internal.token_restore")
+local infinity = require("token.internal.token_infinity")
 
 ---@class token.container
 ---@field id string Container unique identifier
@@ -80,9 +80,15 @@ end
 
 ---Get token instance
 ---@private
----@param token_id string
+---@param token_id string|token.token_config_data
 ---@return token.value
 function M:token(token_id)
+	if type(token_id) == "table" then
+		assert(token_id.id, "Token config data must have an id field")
+		token_id = token_id.id
+	end
+	---@cast token_id string
+
 	if not self._tokens[token_id] then
 		return self:_create_token(token_id)
 	end
@@ -100,7 +106,7 @@ end
 
 
 ---Add tokens to the container
----@param token_id string
+---@param token_id string|token.token_config_data
 ---@param amount number
 ---@param reason string|nil
 ---@param visual_later boolean|nil
@@ -111,7 +117,7 @@ end
 
 
 ---Set token amount in the container
----@param token_id string
+---@param token_id string|token.token_config_data
 ---@param amount number
 ---@param reason string|nil
 ---@param visual_later boolean|nil
@@ -122,7 +128,7 @@ end
 
 
 ---Get token amount from the container
----@param token_id string
+---@param token_id string|token.token_config_data
 ---@param default_value any|nil
 ---@return number|any
 function M:get(token_id, default_value)

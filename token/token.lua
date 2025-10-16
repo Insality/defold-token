@@ -1,9 +1,10 @@
 local event = require("event.event")
-local logger = require("token.internal.logger")
-local state = require("token.internal.state")
-local config = require("token.internal.config")
-local container = require("token.internal.container")
-local restore = require("token.internal.restore")
+
+local logger = require("token.internal.token_logger")
+local state = require("token.internal.token_state")
+local config = require("token.internal.token_config")
+local container = require("token.internal.token_container")
+local restore = require("token.internal.token_restore")
 
 ---The Defold Token module.
 ---Used to manage all countable items in the game.

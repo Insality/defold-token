@@ -8,9 +8,9 @@
 
 ---@class token.token_config_data
 ---@field id string|nil Token id, Autofill
----@field default number|nil Default value
----@field min number|nil Min value
----@field max number|nil Max value
+---@field default number|nil Default: 0
+---@field min number|nil Default: -math.huge
+---@field max number|nil Default: math.huge
 
 ---@class token.lot
 ---@field price string Group id
