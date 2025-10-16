@@ -1,7 +1,7 @@
 
 local token = require("token.token")
 local druid = require("druid.druid")
-local token_debug_page = require("token.token.debug_page")
+local token_debug_page = require("token.token_debug_page")
 local properties_panel = require("druid.widget.properties_panel.properties_panel")
 
 function init(self)
@@ -18,15 +18,8 @@ function init(self)
 
 	-- Optional: load configuration
 	token.init({
-		token_configs = {
-			default = {
-				gold = { max = 999999, default = 0 },
-				gems = { max = 99999, default = 0 }
-			},
-			drop = {
-				gold = { max = 999, default = 0 }
-			},
-		}
+		gold = { max = 999999, default = 0 },
+		gems = { max = 99999, default = 0 }
 	})
 
 	-- Create container using new API
