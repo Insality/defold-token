@@ -150,30 +150,6 @@ function M.is_container_exist(container_id)
 end
 
 
----Load configuration from a table
----@param config_or_path table|string Configuration table or JSON path
-function M.load_config(config_or_path)
-	if type(config_or_path) == "string" then
-		-- Load from JSON file
-		local resource, is_error = sys.load_resource(config_or_path)
-		if is_error or not resource then
-			logger:error("Can't load token config", config_or_path)
-			return
-		end
-		local is_ok, decoded_config = pcall(json.decode, resource)
-		if not is_ok then
-			logger:error("Can't decode token config", config_or_path)
-			return
-		end
-		if decoded_config then
-			config.load_config(decoded_config)
-		end
-	else
-		config.load_config(config_or_path)
-	end
-end
-
-
 ---Register tokens in the token system
 ---@param tokens table<string, token.token_config_data> Table mapping token IDs to token config data
 ---@param config_group string|nil Optional config group (defaults to "default")
@@ -235,6 +211,7 @@ function M.get_lot_price(lot_id)
 	return config.get_group(lot.price)
 end
 
+
 ---Get token configuration
 ---@param token_id string The unique identifier for the token
 ---@return token.token_config_data|nil config The token config, or nil if the token doesn't exist
@@ -243,25 +220,18 @@ function M.get_token_config(token_id)
 end
 
 
----Initialize the token system with configuration (optional)
----@param tokens_config_or_path table<string, token.token_config_data>|string|nil Lua table or path to token config. Example: "/resources/tokens.json"
-function M.init(tokens_config_or_path)
-	if tokens_config_or_path then
-		M.load_config(tokens_config_or_path)
-	end
+---Initialize the token system with token configuration (optional)
+---@param tokens_config_or_path table<string, token.token_config_data>|string Lua table with tokens or path to JSON config. Example: "/resources/tokens.json"
+---@param config_group string|nil Optional config group (defaults to "default")
+function M.init(tokens_config_or_path, config_group)
+	config.register_tokens(tokens_config_or_path, config_group)
 
 	M.containers = {}
 	M.timer_id = timer.delay(1/60, true, M.update)
 
 	-- Create container instances for all state data
-	for container_id, state_data in pairs(state.get_all_containers()) do
-		local new_container = container.create(container_id, nil, state_data)
-		M.containers[container_id] = new_container
-
-		-- Subscribe to container events to trigger global events
-		new_container.on_token_change:subscribe(M.on_token_change, container_id)
-		new_container.on_token_visual_change:subscribe(M.on_token_visual_change, container_id)
-		new_container.on_token_restore_change:subscribe(M.on_token_restore_change, container_id)
+	for container_id in pairs(state.get_all_containers()) do
+		M.container(container_id)
 	end
 end
 

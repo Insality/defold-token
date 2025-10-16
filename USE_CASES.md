@@ -15,7 +15,7 @@ local token = require("token.token")
 
 function init(self)
 	saver.init()
-	saver.bind_save_part("token", token.state)
+	saver.bind_save_part("token", token.get_state())
 
 	token.init()
 end
@@ -39,8 +39,9 @@ end
 
 
 function init(self)
-	token.state = load_token_state()
-	token.init(token_state)
+	local state = load_token_state()
+	token.set_state(state)
+	token.init()
 end
 ```
 
@@ -130,4 +131,39 @@ wallet:add(tokens.gold, 100, "task_completed")
 
 -- You still can use any token id as a string, the token config is not required to count as a valid token id
 wallet:add("token_without_config", 100, "task_completed")
+```
+
+
+## Token Groups and Lots
+
+Token groups and lots should be registered separately using dedicated functions:
+
+```lua
+local token = require("token.token")
+
+-- Initialize with tokens config
+token.init(require("game.tokens"))
+
+-- Register token groups (collections of tokens for rewards/prices)
+token.register_token_groups({
+	starter_pack = {
+		gold = 100,
+		exp = 50,
+	},
+	starter_pack_price = {
+		money = 5,
+	},
+	daily_reward = {
+		gold = 10,
+		token_basic = 5,
+	},
+})
+
+-- Register lots (price + reward pairs)
+token.register_lots({
+	shop_item_1 = {
+		price = "starter_pack_price",  -- group id
+		reward = "starter_pack",        -- group id
+	},
+})
 ```

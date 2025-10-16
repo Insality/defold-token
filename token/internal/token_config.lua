@@ -36,21 +36,6 @@ M.token_groups = {}
 M.lots = {}
 
 
----Load configuration from a table
----@param config token.config Configuration table with token_configs, token_groups, and lots
-function M.load_config(config)
-	M.token_configs = config.tokens or M.token_configs
-	M.token_groups = config.groups or M.token_groups
-	M.lots = config.lots or M.lots
-
-	for _, tokens in pairs(M.token_configs) do
-		for token_id, data in pairs(tokens) do
-			data.id = token_id
-		end
-	end
-end
-
-
 ---Get token configuration for a specific token
 ---Lookup order: config_group → "default" group → empty table
 ---@param token_id string
@@ -66,8 +51,8 @@ function M.get_token_config(token_id, config_group)
 	end
 
 	-- Fall back to default group
-	if M.token_configs.default then
-		local config = M.token_configs.default[token_id]
+	if M.token_configs["default"] then
+		local config = M.token_configs["default"][token_id]
 		if config then
 			return config
 		end
@@ -101,19 +86,18 @@ end
 function M.register_token(token_id, data, config_group)
 	config_group = config_group or "default"
 
-	if not M.token_configs[config_group] then
-		M.token_configs[config_group] = {}
-	end
-
-	data.id = token_id
+	M.token_configs[config_group] = M.token_configs[config_group] or {}
 	M.token_configs[config_group][token_id] = data
+	data.id = token_id
 end
 
 
 ---Register multiple tokens
----@param tokens table<string, token.token_config_data>
+---@param tokens table<string, token.token_config_data>|string
 ---@param config_group string|nil Config group (defaults to "default")
 function M.register_tokens(tokens, config_group)
+	tokens = M._parse_path_or_table(tokens)
+
 	for token_id, data in pairs(tokens) do
 		M.register_token(token_id, data, config_group)
 	end
@@ -129,8 +113,10 @@ end
 
 
 ---Register multiple token groups
----@param groups table<string, table<string, number>>
+---@param groups table<string, table<string, number>>|string
 function M.register_groups(groups)
+	groups = M._parse_path_or_table(groups)
+
 	for group_id, tokens in pairs(groups) do
 		M.register_group(group_id, tokens)
 	end
@@ -146,11 +132,47 @@ end
 
 
 ---Register multiple lots
----@param lots table<string, token.lot>
+---@param lots table<string, token.lot>|string
 function M.register_lots(lots)
+	lots = M._parse_path_or_table(lots)
+
 	for lot_id, lot in pairs(lots) do
 		M.register_lot(lot_id, lot)
 	end
+end
+
+
+
+---Load token config from JSON file
+---@param path string
+---@return table? table
+---@return string? error message
+function M._load_json(path)
+	local resource, is_error = sys.load_resource(path)
+	if is_error or not resource then
+		return nil, "Can't load token config"
+	end
+
+	local is_ok, decoded_config = pcall(json.decode, resource)
+	if not is_ok then
+		return nil, "Can't decode token config"
+	end
+	return decoded_config, nil
+end
+
+
+---Parse path or table
+---@param tokens table|string
+---@return table
+function M._parse_path_or_table(tokens)
+	if type(tokens) == "string" then
+		local data, reason = M.load_json(tokens)
+		if not data then
+			error("Can't load token config: " .. reason)
+		end
+		return data
+	end
+	return tokens
 end
 
 
