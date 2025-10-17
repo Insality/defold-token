@@ -129,21 +129,14 @@ end
 
 ---Get token amount from the container
 ---@param token_id string|token.token_config_data
----@param default_value any|nil
 ---@return number|any
-function M:get(token_id, default_value)
+function M:get(token_id)
 	local token = self._tokens[token_id]
 	if not token then
-		-- Create token to apply config defaults
 		token = self:token(token_id)
 	end
 
-	local value = token:get()
-	-- Only use default_value if the token value is 0 and default_value is provided
-	if value == 0 and default_value ~= nil then
-		return default_value
-	end
-	return value
+	return token:get()
 end
 
 
