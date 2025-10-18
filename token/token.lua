@@ -80,7 +80,6 @@ end
 ---@param config_group string|nil Optional configuration group
 ---@return token.container Container instance
 function M.container(container_id, config_group)
-	-- Return existing container if it exists
 	if M.containers[container_id] then
 		return M.containers[container_id]
 	end
