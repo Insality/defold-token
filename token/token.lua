@@ -224,7 +224,9 @@ end
 ---@param tokens_config_or_path table<string, token.token_config_data>|string Lua table with tokens or path to JSON config. Example: "/resources/tokens.json"
 ---@param config_group string|nil Optional config group (defaults to "default")
 function M.init(tokens_config_or_path, config_group)
-	config.register_tokens(tokens_config_or_path, config_group)
+	if tokens_config_or_path then
+		config.register_tokens(tokens_config_or_path, config_group)
+	end
 
 	M.containers = {}
 
