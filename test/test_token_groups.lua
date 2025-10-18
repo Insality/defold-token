@@ -10,10 +10,7 @@ return function()
 	describe("Tokens", function()
 		local token ---@type token
 		local test_container ---@type token.container
-		local wallet ---@type token.container
-
 		local TEST_CONTAINER_ID = "test_container"
-		local WALLET_ID = "wallet"
 
 		local CONFIG_TOKEN_GROUPS = {
 			iap_2 = {

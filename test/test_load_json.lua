@@ -28,11 +28,19 @@ return function()
 
 			local lot_price = token.get_lot_price("shop_1")
 			assert(lot_price)
-			assert(lot_price["crystal"] == 1)
+			assert(lot_price["money"] == 100)
 
 			local lot_reward = token.get_lot_reward("shop_1")
 			assert(lot_reward)
-			assert(lot_reward["level"] == 1)
+			assert(lot_reward["energy"] == 10)
+
+			local lot_price = token.get_lot_price("shop_2")
+			assert(lot_price)
+			assert(lot_price["money"] == 200)
+
+			local lot_reward = token.get_lot_reward("shop_2")
+			assert(lot_reward)
+			assert(lot_reward["energy"] == 20)
 		end)
 	end)
 end

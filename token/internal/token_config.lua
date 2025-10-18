@@ -36,6 +36,16 @@ M.token_groups = {}
 M.lots = {}
 
 
+---Reset config to default
+function M.reset()
+	M.token_configs = {
+		default = {}
+	}
+	M.token_groups = {}
+	M.lots = {}
+end
+
+
 ---Get token configuration for a specific token
 ---Lookup order: config_group → "default" group → empty table
 ---@param token_id string

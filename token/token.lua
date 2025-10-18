@@ -44,6 +44,7 @@ M.timer_id = nil
 ---Call this to reset state to default
 function M.reset_state()
 	state.reset()
+	config.reset()
 	M.containers = {}
 
 	if M.timer_id then
