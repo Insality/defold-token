@@ -166,7 +166,7 @@ end
 ---@return table
 function M._parse_path_or_table(tokens)
 	if type(tokens) == "string" then
-		local data, reason = M.load_json(tokens)
+		local data, reason = M._load_json(tokens)
 		if not data then
 			error("Can't load token config: " .. reason)
 		end

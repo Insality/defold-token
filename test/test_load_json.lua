@@ -10,7 +10,10 @@ return function()
 	end)
 
 		it("Load token config from resources JSON file", function()
-			token.init("/test/resources/token_config.json")
+			token.init()
+			token.register_tokens("/test/resources/token_config.json")
+			token.register_token_groups("/test/resources/token_groups.json")
+			token.register_lots("/test/resources/token_lots.json")
 			wallet = token.container(WALLET_ID)
 
 			local money = wallet:get("money")

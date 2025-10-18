@@ -8,25 +8,15 @@ return function()
 
 		local TEST_CONTAINER_ID = "test_container"
 		local WALLET_ID = "wallet"
-		local CONFIG_TOKEN = {
-			tokens = {
-				level = {
-					default = 1,
-					min = 1,
-					max = 80
-				}
-			}
+		local CONFIG_TOKENS = {
+			level = { default = 1, min = 1, max = 80 }
 		}
-
-		local function set_time(time)
-			mock_time.set(time)
-		end
 
 	before(function()
 		token = require("token.token") --[[@as token]]
 		token.reset_state()
 		token.init()
-		token.register_tokens(CONFIG_TOKEN.tokens)
+		token.register_tokens(CONFIG_TOKENS)
 		test_container = token.container(TEST_CONTAINER_ID)
 		wallet = token.container(WALLET_ID)
 

@@ -1,41 +1,15 @@
 {
-	"token_configs": {
-		"default": {
-			"money": {
-				"default": 0,
-				"min": 0
-			},
-			"crystal": {
-				"default": 0,
-				"min": 0
-			},
-			"level": {
-				"default": 1,
-				"min": 1,
-				"max": 10
-			}
-		}
+	"money": {
+		"default": 0,
+		"min": 0
 	},
-	"token_groups": {
-		"reward_1": {
-			"money": 100,
-			"crystal": 10
-		},
-		"reward_2": {
-			"money": 200,
-			"crystal": 20
-		},
-		"level_up": {
-			"level": 1
-		},
-		"price_default_1": {
-			"crystal": 1
-		}
+	"crystal": {
+		"default": 0,
+		"min": 0
 	},
-	"lots": {
-		"shop_1": {
-			"price": "price_default_1",
-			"reward": "level_up"
-		}
+	"level": {
+		"default": 1,
+		"min": 1,
+		"max": 10
 	}
 }

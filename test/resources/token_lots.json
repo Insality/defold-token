@@ -1,0 +1,10 @@
+{
+	"shop_1": {
+		"price": "money",
+		"reward": "energy"
+	},
+	"shop_2": {
+		"price": "money2",
+		"reward": "energy2"
+	}
+}

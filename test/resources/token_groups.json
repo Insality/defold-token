@@ -1,0 +1,22 @@
+{
+	"reward_1": {
+		"money": 100,
+		"crystal": 10
+	},
+	"reward_2": {
+		"energy": 50,
+		"level": 2
+	},
+	"money": {
+		"money": 100
+	},
+	"energy": {
+		"energy": 10
+	},
+	"money2": {
+		"money": 200
+	},
+	"energy2": {
+		"energy": 20
+	}
+}

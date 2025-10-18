@@ -45,6 +45,7 @@ M.timer_id = nil
 function M.reset_state()
 	state.reset()
 	M.containers = {}
+
 	if M.timer_id then
 		timer.cancel(M.timer_id)
 		M.timer_id = nil
@@ -150,7 +151,7 @@ end
 
 
 ---Register tokens in the token system
----@param tokens table<string, token.token_config_data> Table mapping token IDs to token config data
+---@param tokens table<string, token.token_config_data>|string Table mapping token IDs to token config data
 ---@param config_group string|nil Optional config group (defaults to "default")
 function M.register_tokens(tokens, config_group)
 	config.register_tokens(tokens, config_group)
@@ -158,14 +159,14 @@ end
 
 
 ---Register token groups in the token system
----@param groups table<string, table<string, number>> Table mapping group IDs to token IDs and amounts
+---@param groups table<string, table<string, number>>|string Table mapping group IDs to token IDs and amounts
 function M.register_token_groups(groups)
 	config.register_groups(groups)
 end
 
 
 ---Register lots in the token system
----@param lots_data table<string, token.lot> Table mapping lot IDs to lot config
+---@param lots_data table<string, token.lot>|string Table mapping lot IDs to lot config
 function M.register_lots(lots_data)
 	config.register_lots(lots_data)
 end
@@ -220,7 +221,7 @@ end
 
 
 ---Initialize the token system with token configuration (optional)
----@param tokens_config_or_path table<string, token.token_config_data>|string Lua table with tokens or path to JSON config. Example: "/resources/tokens.json"
+---@param tokens_config_or_path table<string, token.token_config_data>|string|nil Lua table with tokens or path to JSON config. Example: "/resources/tokens.json"
 ---@param config_group string|nil Optional config group (defaults to "default")
 function M.init(tokens_config_or_path, config_group)
 	if tokens_config_or_path then

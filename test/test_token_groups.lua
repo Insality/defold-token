@@ -43,13 +43,10 @@ return function()
 		token = require("token.token")
 
 		token.reset_state()
-		token.init({
-			token_configs = {},
-			token_groups = CONFIG_TOKEN_GROUPS,
-			lots = CONGIG_LOTS
-		})
+		token.init()
+		token.register_token_groups(CONFIG_TOKEN_GROUPS)
+		token.register_lots(CONGIG_LOTS)
 		test_container = token.container(TEST_CONTAINER_ID)
-		wallet = token.container(WALLET_ID)
 
 		mock_time.mock()
 		mock_time.set(0)
@@ -96,11 +93,15 @@ return function()
 
 		it("Should get tokens by group_id", function()
 			local tokens = token.get_token_group("reward2")
+			pprint(test_container:get("level"))
 
 			assert(table_len(tokens) == 2)
 
+			pprint(tokens)
 			test_container:add_many(tokens)
 			assert(test_container:get("energy") == 50)
+			pprint(test_container:get("energy"))
+			pprint(test_container:get("level"))
 			assert(test_container:get("level") == 2)
 		end)
 
