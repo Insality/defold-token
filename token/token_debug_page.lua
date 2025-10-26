@@ -1,10 +1,11 @@
+local token = require("token.token")
+
 local M = {}
 
 
----@param token token
 ---@param druid druid.instance
 ---@param properties_panel druid.widget.properties_panel
-function M.render_properties_panel(token, druid, properties_panel)
+function M.render_properties_panel(druid, properties_panel)
 	properties_panel:next_scene()
 	properties_panel:set_header("Token Panel")
 
