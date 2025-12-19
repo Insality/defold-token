@@ -37,13 +37,13 @@ Open your `game.project` file and add the following line to the dependencies fie
 **[Defold Event](https://github.com/Insality/defold-event)**
 
 ```
-https://github.com/Insality/defold-event/archive/refs/tags/11.zip
+https://github.com/Insality/defold-event/archive/refs/tags/13.zip
 ```
 
 **[Defold Token](https://github.com/Insality/defold-token/archive/refs/tags/1.zip)**
 
 ```
-https://github.com/Insality/defold-token/archive/refs/tags/1.zip
+https://github.com/Insality/defold-token/archive/refs/tags/3.zip
 ```
 
 After that, select `Project ▸ Fetch Libraries` to update [library dependencies]((https://defold.com/manuals/libraries/#setting-up-library-dependencies)). This happens automatically whenever you open a project so you will only need to do this if the dependencies change without re-opening the project.
@@ -66,65 +66,98 @@ After that, select `Project ▸ Fetch Libraries` to update [library dependencies
 - **Token Lot**: A data with a price group id and reward group id. Can be used for shop items, for example.
 
 
+## Basic Usage
+```lua
+local token = require("token.token")
+
+token.init({
+	tokens = {
+		["money"] = { default = 100, min = 0, max = 10000 },
+		["exp"] = {},
+		["level"] = { default = 1, min = 1, max = 100 },
+	}
+})
+
+token.get_state() -- get the current state for save/load
+token.set_state(state) -- set the state for save/load
+
+token.container("wallet"):add("exp", 100)
+token.container("wallet"):add("level", 1)
+token.container("wallet"):pay("money", 100)
+
+token.container("skill"):get("damage")
+```
+
 ## API Reference
 
 ### Quick API Reference
 
 ```lua
-token.init([config_or_path])
+local token = require("token.token")
+
+-- Initialize the token system
+token.init([tokens_config_or_path], [config_group])
+token.get_state()
+token.set_state(new_state)
 token.reset_state()
+
+-- Containers
+token.container(container_id, [config_group])
+token.delete_container(container_id)
+token.clear_container(container_id)
+token.is_container_exist(container_id)
+
+-- Data management
+token.register_tokens(tokens, [config_group])
+token.register_token_groups(groups)
+token.register_lots(lots_data)
+token.get_token_group(token_group_id)
+token.get_lot_reward(lot_id)
+token.get_lot_price(lot_id)
+token.get_token_config(token_id)
+
+-- System
+token.set_logger([logger_instance])
 
 -- Events
 token.on_token_change -- (container_id, token_id, amount, reason)
 token.on_token_visual_change -- (container_id, token_id, amount)
 token.on_token_restore_change -- (container_id, token_id, restore_config)
+```
 
-token.create_container(container_id)
-token.delete_container(container_id)
-token.clear_container(container_id)
-token.is_container_exist(container_id)
+```lua
+local container = token.container("wallet")
 
-token.get(container_id, token_id)
-token.set(container_id, token_id, amount, reason)
-token.add(container_id, token_id, amount, reason, visual_later)
-token.pay(container_id, token_id, amount, reason, visual_later)
-token.is_enough(container_id, token_id, amount)
+-- Single Token
+container:add(token_id, amount, [reason], [visual_later])
+container:set(token_id, amount, [reason], [visual_later])
+container:get(token_id)
+container:pay(token_id, amount, [reason], [visual_later])
+container:is_enough(token_id, amount)
+container:is_empty(token_id)
+container:is_max(token_id)
 
-token.get_many(container_id)
-token.set_many(container_id, tokens, reason, visual_later)
-token.add_many(container_id, tokens, reason, visual_later)
-token.pay_many(container_id, tokens, reason, visual_later)
-token.is_enough_many(container_id, tokens)
+-- Multiple Tokens
+container:add_many([tokens], [reason], [visual_later])
+container:set_many([tokens], [reason], [visual_later])
+container:pay_many(tokens, [reason], [visual_later])
+container:is_enough_many([tokens])
+container:get_many()
 
-token.get_token_group(token_group_id)
-token.add_group(container_id, token_group_id, reason, visual_later)
-token.set_group(container_id, token_group_id, reason, visual_later)
-token.pay_group(container_id, token_group_id, reason, visual_later)
-token.is_enough_group(container_id, token_group_id)
+-- Token Groups
+container:add_group(group_id, [reason], [visual_later])
+container:set_group(group_id, [reason], [visual_later])
+container:pay_group(group_id, [reason], [visual_later])
+container:is_enough_group(group_id)
 
-token.create_restore_config()
-token.set_restore_config(container_id, token_id, config)
-token.get_restore_config(container_id, token_id)
-token.set_restore_enabled(container_id, token_id, is_enabled)
-token.is_restore_enabled(container_id, token_id)
-token.remove_restore_config(container_id, token_id)
-token.get_time_to_restore(container_id, token_id)
+-- Visual Management
+container:sync_visual(token_id)
+container:add_visual(token_id, amount)
+container:get_visual(token_id)
 
-token.get_lot_reward(lot_id)
-token.get_lot_price(lot_id)
-
-token.add_infinity_time(container_id, token_id, seconds)
-token.get_infinity_time(container_id, token_id)
-token.set_infinity_time(container_id, token_id, seconds)
-token.is_infinity_time(container_id, token_id)
-
-token.get_visual(container_id, token_id)
-token.add_visual(container_id, token_id, amount)
-token.sync_visual(container_id, token_id)
-
-token.get_total_sum(container_id, token_id)
-
-token.set_logger([logger_instance])
+-- Info
+container:get_total_sum(token_id)
+container:get_token_config(token_id)
 ```
 
 ### API Reference

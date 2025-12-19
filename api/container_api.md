@@ -1,11 +1,12 @@
 # token.container API
 
-> at token/token/container.lua
+> at /token/internal/token_container.lua
 
 ## Functions
 
 - [create](#create)
-
+- [token](#token)
+- [get_state_data](#get_state_data)
 - [add](#add)
 - [set](#set)
 - [get](#get)
@@ -23,7 +24,10 @@
 - [get_visual](#get_visual)
 - [get_total_sum](#get_total_sum)
 - [get_token_config](#get_token_config)
-
+- [add_group](#add_group)
+- [set_group](#set_group)
+- [pay_group](#pay_group)
+- [is_enough_group](#is_enough_group)
 ## Fields
 
 - [id](#id)
@@ -31,15 +35,12 @@
 - [on_token_change](#on_token_change)
 - [on_token_visual_change](#on_token_visual_change)
 - [on_token_restore_change](#on_token_restore_change)
-- [add_group](#add_group)
-- [set_group](#set_group)
-- [pay_group](#pay_group)
-- [is_enough_group](#is_enough_group)
 - [set_restore_config](#set_restore_config)
 - [get_restore_config](#get_restore_config)
 - [set_restore_config_enabled](#set_restore_config_enabled)
 - [is_restore_config_enabled](#is_restore_config_enabled)
 - [remove_restore_config](#remove_restore_config)
+- [reset_restore_timer](#reset_restore_timer)
 - [get_time_to_restore](#get_time_to_restore)
 - [add_infinity_time](#add_infinity_time)
 - [is_infinity](#is_infinity)
@@ -65,6 +66,34 @@ Create a new container instance
 - **Returns:**
 	- `` *(token.container)*:
 
+### token
+
+---
+```lua
+container:token(token_id)
+```
+
+Get token instance
+
+- **Parameters:**
+	- `token_id` *(string|token.token_config_data)*:
+
+- **Returns:**
+	- `` *(token.value)*:
+
+### get_state_data
+
+---
+```lua
+container:get_state_data()
+```
+
+Get container state data
+**For internal use only by token module plugins (restore/infinity)**
+
+- **Returns:**
+	- `` *(token.container_data)*:
+
 ### add
 
 ---
@@ -75,7 +104,7 @@ container:add(token_id, amount, [reason], [visual_later])
 Add tokens to the container
 
 - **Parameters:**
-	- `token_id` *(string)*:
+	- `token_id` *(string|token.token_config_data)*:
 	- `amount` *(number)*:
 	- `[reason]` *(string|nil)*:
 	- `[visual_later]` *(boolean|nil)*:
@@ -93,7 +122,7 @@ container:set(token_id, amount, [reason], [visual_later])
 Set token amount in the container
 
 - **Parameters:**
-	- `token_id` *(string)*:
+	- `token_id` *(string|token.token_config_data)*:
 	- `amount` *(number)*:
 	- `[reason]` *(string|nil)*:
 	- `[visual_later]` *(boolean|nil)*:
@@ -105,14 +134,13 @@ Set token amount in the container
 
 ---
 ```lua
-container:get(token_id, [default_value])
+container:get(token_id)
 ```
 
 Get token amount from the container
 
 - **Parameters:**
-	- `token_id` *(string)*:
-	- `[default_value]` *(any)*:
+	- `token_id` *(string|token.token_config_data)*:
 
 - **Returns:**
 	- `` *(any)*:
@@ -329,6 +357,66 @@ Get token configuration
 - **Returns:**
 	- `` *(token.token_config_data)*:
 
+### add_group
+
+---
+```lua
+container:add_group(group_id, [reason], [visual_later])
+```
+
+Add tokens from a token group to container
+
+- **Parameters:**
+	- `group_id` *(string)*: Token group id
+	- `[reason]` *(string|nil)*: Optional reason for tracking
+	- `[visual_later]` *(boolean|nil)*: If true, visual update will be delayed
+
+### set_group
+
+---
+```lua
+container:set_group(group_id, [reason], [visual_later])
+```
+
+Set tokens in container to match a token group
+
+- **Parameters:**
+	- `group_id` *(string)*: Token group id
+	- `[reason]` *(string|nil)*: Optional reason for tracking
+	- `[visual_later]` *(boolean|nil)*: If true, visual update will be delayed
+
+### pay_group
+
+---
+```lua
+container:pay_group(group_id, [reason], [visual_later])
+```
+
+Pay tokens from container using a token group as cost
+
+- **Parameters:**
+	- `group_id` *(string)*: Token group id
+	- `[reason]` *(string|nil)*: Optional reason for tracking
+	- `[visual_later]` *(boolean|nil)*: If true, visual update will be delayed
+
+- **Returns:**
+	- `True` *(boolean)*: if payment was successful, false otherwise
+
+### is_enough_group
+
+---
+```lua
+container:is_enough_group(group_id)
+```
+
+Check if container has enough tokens to pay for a token group
+
+- **Parameters:**
+	- `group_id` *(string)*: Token group id
+
+- **Returns:**
+	- `True` *(boolean)*: if enough tokens are available, false otherwise
+
 
 ## Fields
 <a name="id"></a>
@@ -346,18 +434,6 @@ Get token configuration
 <a name="on_token_restore_change"></a>
 - **on_token_restore_change** (_event_): Per-container restore change event
 
-<a name="add_group"></a>
-- **add_group** (_function_):  Integrate token_groups methods
-
-<a name="set_group"></a>
-- **set_group** (_function_)
-
-<a name="pay_group"></a>
-- **pay_group** (_function_)
-
-<a name="is_enough_group"></a>
-- **is_enough_group** (_function_)
-
 <a name="set_restore_config"></a>
 - **set_restore_config** (_function_):  Integrate token_restore methods
 
@@ -372,6 +448,9 @@ Get token configuration
 
 <a name="remove_restore_config"></a>
 - **remove_restore_config** (_function_)
+
+<a name="reset_restore_timer"></a>
+- **reset_restore_timer** (_function_)
 
 <a name="get_time_to_restore"></a>
 - **get_time_to_restore** (_function_)

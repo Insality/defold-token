@@ -82,7 +82,7 @@ function M.render_container_page(token, container_id, properties_panel)
 		for token_id, _ in pairs(container.tokens) do
 			-- Token actions
 			properties_panel:add_button(function(button)
-				local amount = token.container(container_id):get(token_id, 0)
+				local amount = token.container(container_id):get(token_id)
 				button:set_text_property(token_id)
 				button:set_text_button(amount)
 				button.button.on_click:subscribe(function()
@@ -105,7 +105,7 @@ function M.render_token_details_page(container, token_id, properties_panel)
 
 	-- Amount
 	properties_panel:add_input(function(input)
-		local amount = container:get(token_id, 0)
+		local amount = container:get(token_id)
 		input:set_text_property("Amount")
 		input:set_text_value(tostring(amount))
 		input.on_change_value:subscribe(function(value)

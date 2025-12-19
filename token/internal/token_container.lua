@@ -79,7 +79,6 @@ end
 
 
 ---Get token instance
----@private
 ---@param token_id string|token.token_config_data
 ---@return token.value
 function M:token(token_id)

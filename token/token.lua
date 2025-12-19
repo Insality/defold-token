@@ -236,11 +236,6 @@ function M.init(tokens_config_or_path, config_group)
 		M.container(container_id)
 	end
 
-	M.start_timer()
-end
-
-
-function M.start_timer()
 	if M.timer_id then
 		timer.cancel(M.timer_id)
 	end
