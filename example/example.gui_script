@@ -1,8 +1,8 @@
 
 local token = require("token.token")
 local druid = require("druid.druid")
-local token_debug_page = require("token.token_debug_page")
-local properties_panel = require("druid.widget.properties_panel.properties_panel")
+local token_debug_page = require("widget.debug_page_token.debug_page_token")
+local properties_panel = require("widget.properties_panel.properties_panel")
 
 function init(self)
 	self.druid = druid.new(self)
@@ -12,7 +12,7 @@ function init(self)
 		button:set_text_property("Token Panel")
 		button:set_text_button("Open")
 		button.button.on_click:subscribe(function()
-			token_debug_page.render_properties_panel(token, self.druid, self.properties_panel)
+			token_debug_page.render_properties_panel(self.druid, self.properties_panel)
 		end)
 	end)
 

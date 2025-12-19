@@ -20,6 +20,7 @@ custom_resources = /resources,/test/resources
 dependencies#0 = https://github.com/britzl/deftest/archive/master.zip
 dependencies#1 = https://github.com/Insality/defold-event/archive/refs/heads/develop.zip
 dependencies#2 = https://github.com/Insality/druid/archive/refs/heads/develop.zip
+dependencies#3 = https://github.com/Insality/asset-store/archive/refs/heads/main.zip
 
 [library]
 include_dirs = token
