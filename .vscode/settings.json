@@ -28,10 +28,11 @@
 		"timer",
 		"socket",
 		"assert_equal",
-		"sys"
+		"sys",
+		"event_context_manager"
 	],
 	"Lua.workspace.library": [
 		"~/Library/Application Support/Cursor/User/globalStorage/astronachos.defold",
-		"~/Library/Application Support/Cursor/User/workspaceStorage/939867c92961f8e45a79cf9cab057eac/astronachos.defold"
+		"~/Library/Application Support/Cursor/User/workspaceStorage/9ea25e721be13ba4ff17788d335991b8/astronachos.defold"
 	]
 }

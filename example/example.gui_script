@@ -1,13 +1,78 @@
+local saver = require("saver.saver")
 local token = require("token.token")
-
+local druid = require("druid.druid")
+local token_debug_page = require("widget.debug_page_token.debug_page_token")
+local properties_panel = require("widget.properties_panel.properties_panel")
 
 function init(self)
-	token.init()
+	self.druid = druid.new(self)
 
-	token.create_container("wallet")
-	pprint(token.get("wallet", "money"))
-	token.add("wallet", "money", 100)
-	pprint(token.get("wallet", "money"))
+	saver.init()
+	saver.bind_save_state("token", token.get_state())
 
-	pprint(token.state)
+	self.properties_panel = self.druid:new_widget(properties_panel, "properties_panel")
+	self.properties_panel:add_button(function(button)
+		button:set_text_property("Token Panel")
+		button:set_text_button("Open")
+		button.button.on_click:subscribe(function()
+			token_debug_page.render_properties_panel(self.druid, self.properties_panel)
+		end)
+	end)
+
+	-- Optional: load configuration
+	token.init({
+		gold = { max = 999999, default = 0 },
+		gems = { max = 99999, default = 0 }
+	})
+
+	-- Create container using new API
+	local wallet = token.container("wallet")
+
+	-- Get/set/add operations
+	print("Get gold:", wallet:get("gold"))
+	wallet:add("gold", 500)
+	print("After add:", wallet:get("gold"))
+
+	-- Container operations
+	wallet:set("gems", 10)
+	wallet:pay("gems", 3)
+	print("Gems after pay:", wallet:get("gems"))
+
+	-- Check operations
+	if wallet:is_enough("gold", 100) then
+		print("Have enough gold!")
+	end
+
+	-- Multiple tokens
+	wallet:add_many({ gold = 100, gems = 5 })
+	pprint("All tokens:", wallet:get_many())
+
+	pprint(token.get_state())
+
+
+	local skills = token.container("skills")
+	skills:add("damage", 100)
+	print("Damage:", skills:get("damage"))
+	skills:add("crit_chance", 0.05)
+	print("Crit Chance:", skills:get("crit_chance"))
 end
+
+
+function final(self)
+	self.druid:final()
+end
+
+
+function update(self, dt)
+	self.druid:update(dt)
+end
+
+function on_message(self, message_id, message, sender)
+	self.druid:on_message(message_id, message, sender)
+end
+
+
+function on_input(self, action_id, action)
+	self.druid:on_input(action_id, action)
+end
+

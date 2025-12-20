@@ -8,11 +8,6 @@
 [![Github-sponsors](https://img.shields.io/badge/sponsor-30363D?style=for-the-badge&logo=GitHub-Sponsors&logoColor=#EA4AAA)](https://github.com/sponsors/insality) [![Ko-Fi](https://img.shields.io/badge/Ko--fi-F16061?style=for-the-badge&logo=ko-fi&logoColor=white)](https://ko-fi.com/insality) [![BuyMeACoffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ffdd00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://www.buymeacoffee.com/insality)
 
 
-# Disclaimer
-
-The library in **development stage**. May be not fully tested and README may be not full. If you have any questions, please, create an issue. This library is an adoptation of [Token](https://github.com/Insality/defold-eva/blob/master/eva/modules/token.lua) module from my [Defold-Eva](https://github.com/Insality/defold-eva) library.
-
-
 # Token
 
 **Token** - library designed for the [Defold](https://defold.com/) game engine to manage countable items such as money, lives, and other numeric values. This library provides a robust and flexible system for handling various token-related operations, including creation, management, and restoration of token values.
@@ -37,13 +32,13 @@ Open your `game.project` file and add the following line to the dependencies fie
 **[Defold Event](https://github.com/Insality/defold-event)**
 
 ```
-https://github.com/Insality/defold-event/archive/refs/tags/11.zip
+https://github.com/Insality/defold-event/archive/refs/tags/13.zip
 ```
 
 **[Defold Token](https://github.com/Insality/defold-token/archive/refs/tags/1.zip)**
 
 ```
-https://github.com/Insality/defold-token/archive/refs/tags/1.zip
+https://github.com/Insality/defold-token/archive/refs/tags/3.zip
 ```
 
 After that, select `Project ▸ Fetch Libraries` to update [library dependencies]((https://defold.com/manuals/libraries/#setting-up-library-dependencies)). This happens automatically whenever you open a project so you will only need to do this if the dependencies change without re-opening the project.
@@ -66,70 +61,120 @@ After that, select `Project ▸ Fetch Libraries` to update [library dependencies
 - **Token Lot**: A data with a price group id and reward group id. Can be used for shop items, for example.
 
 
+## Basic Usage
+```lua
+local token = require("token.token")
+
+token.init({
+	["money"] = { default = 100, min = 0, max = 10000 },
+	["exp"] = {},
+	["level"] = { default = 1, min = 1, max = 100 },
+})
+
+local state = token.get_state() -- get the current state for save/load
+token.set_state(state) -- set the state for save/load
+
+token.container("wallet"):add("exp", 100)
+token.container("wallet"):add("level", 1)
+token.container("wallet"):pay("money", 100)
+
+-- Configs is not required to operate with tokens
+token.container("skill"):add("damage", 100) -- Return token instance
+token.container("skill"):get("damage") -- Return 100
+```
+
 ## API Reference
 
 ### Quick API Reference
 
 ```lua
-token.init([config_or_path])
+local token = require("token.token")
+
+-- Initialize the token system
+token.init([tokens_config_or_path], [config_group])
+token.get_state()
+token.set_state(new_state)
 token.reset_state()
+
+-- Containers
+token.container(container_id, [config_group])
+token.delete_container(container_id)
+token.clear_container(container_id)
+token.is_container_exist(container_id)
+
+-- Data management
+token.register_tokens(tokens, [config_group])
+token.register_token_groups(groups)
+token.register_lots(lots_data)
+token.get_token_group(token_group_id)
+token.get_lot_reward(lot_id)
+token.get_lot_price(lot_id)
+token.get_token_config(token_id)
+
+-- System
+token.set_logger([logger_instance])
 
 -- Events
 token.on_token_change -- (container_id, token_id, amount, reason)
 token.on_token_visual_change -- (container_id, token_id, amount)
 token.on_token_restore_change -- (container_id, token_id, restore_config)
+```
 
-token.create_container(container_id)
-token.delete_container(container_id)
-token.clear_container(container_id)
-token.is_container_exist(container_id)
+```lua
+local container = token.container("wallet")
 
-token.get(container_id, token_id)
-token.set(container_id, token_id, amount, reason)
-token.add(container_id, token_id, amount, reason, visual_later)
-token.pay(container_id, token_id, amount, reason, visual_later)
-token.is_enough(container_id, token_id, amount)
+-- Single Token
+container:add(token_id, amount, [reason], [visual_later])
+container:set(token_id, amount, [reason], [visual_later])
+container:get(token_id)
+container:pay(token_id, amount, [reason], [visual_later])
+container:is_enough(token_id, amount)
+container:is_empty(token_id)
+container:is_max(token_id)
 
-token.get_many(container_id)
-token.set_many(container_id, tokens, reason, visual_later)
-token.add_many(container_id, tokens, reason, visual_later)
-token.pay_many(container_id, tokens, reason, visual_later)
-token.is_enough_many(container_id, tokens)
+-- Multiple Tokens
+container:add_many([tokens], [reason], [visual_later])
+container:set_many([tokens], [reason], [visual_later])
+container:pay_many(tokens, [reason], [visual_later])
+container:is_enough_many([tokens])
+container:get_many()
 
-token.get_token_group(token_group_id)
-token.add_group(container_id, token_group_id, reason, visual_later)
-token.set_group(container_id, token_group_id, reason, visual_later)
-token.pay_group(container_id, token_group_id, reason, visual_later)
-token.is_enough_group(container_id, token_group_id)
+-- Token Groups
+container:add_group(group_id, [reason], [visual_later])
+container:set_group(group_id, [reason], [visual_later])
+container:pay_group(group_id, [reason], [visual_later])
+container:is_enough_group(group_id)
 
-token.create_restore_config()
-token.set_restore_config(container_id, token_id, config)
-token.get_restore_config(container_id, token_id)
-token.set_restore_enabled(container_id, token_id, is_enabled)
-token.is_restore_enabled(container_id, token_id)
-token.remove_restore_config(container_id, token_id)
-token.get_time_to_restore(container_id, token_id)
+-- Visual Management
+container:sync_visual(token_id)
+container:add_visual(token_id, amount)
+container:get_visual(token_id)
 
-token.get_lot_reward(lot_id)
-token.get_lot_price(lot_id)
+-- Info
+container:get_total_sum(token_id)
+container:get_token_config(token_id)
 
-token.add_infinity_time(container_id, token_id, seconds)
-token.get_infinity_time(container_id, token_id)
-token.set_infinity_time(container_id, token_id, seconds)
-token.is_infinity_time(container_id, token_id)
+-- Restore Config
+container:set_restore_config(token_id, config)
+container:get_restore_config(token_id)
+container:set_restore_config_enabled(token_id, is_enabled)
+container:is_restore_config_enabled(token_id)
+container:remove_restore_config(token_id)
+container:reset_restore_timer(token_id)
+container:get_time_to_restore(token_id)
 
-token.get_visual(container_id, token_id)
-token.add_visual(container_id, token_id, amount)
-token.sync_visual(container_id, token_id)
-
-token.get_total_sum(container_id, token_id)
-
-token.set_logger([logger_instance])
+-- Infinity Config
+container:add_infinity_time(token_id, seconds)
+container:is_infinity(token_id)
+container:get_infinity_time(token_id)
+container:set_infinity_time(token_id, time)
 ```
 
 ### API Reference
 
-Read the [API Reference](API_REFERENCE.md) file to see the full API documentation for the module.
+Read the API Reference:
+- [token](api/token_api.md) - the main module
+- [container](api/container_api.md)
 
 
 ## Use Cases
@@ -153,6 +198,21 @@ For any issues, questions, or suggestions, please [create an issue](https://gith
   <img src="https://contributors-img.web.app/image?repo=insality/defold-token"/>
 </a>
 
+
+## Changelog
+<details>
+
+### **V1**
+- Initial Release
+
+### **V2**
+- Tests, refactor, docs, annotations
+
+### **V3**
+-- Refactor containers and token API
+-- Update docs
+
+</details>
 
 ## ❤️ Support project ❤️
 
