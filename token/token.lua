@@ -25,7 +25,7 @@ M.on_token_change = event.create()
 ---@field subscribe fun(_, callback: fun(container_id: string, token_id: string, amount: number), _)
 M.on_token_visual_change = event.create()
 
----Triggers when token restore config was changed (for backward compatibility)
+---Triggers when token restore config was changed
 ---Callback is fun(container_id: string, token_id: string, config: token.token_restore_config)
 ---@class token.event.on_token_restore_change: event
 ---@field trigger fun(_, container_id: string, token_id: string, config: token.token_restore_config)

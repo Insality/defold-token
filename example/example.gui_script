@@ -47,7 +47,7 @@ function init(self)
 	wallet:add_many({ gold = 100, gems = 5 })
 	pprint("All tokens:", wallet:get_many())
 
-	pprint(token:get_state())
+	pprint(token.get_state())
 
 
 	local skills = token.container("skills")
