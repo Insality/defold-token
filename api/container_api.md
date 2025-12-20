@@ -39,6 +39,7 @@
 - [is_infinity](#is_infinity)
 - [get_infinity_time](#get_infinity_time)
 - [set_infinity_time](#set_infinity_time)
+
 ## Fields
 
 - [id](#id)

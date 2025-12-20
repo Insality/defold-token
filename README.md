@@ -8,11 +8,6 @@
 [![Github-sponsors](https://img.shields.io/badge/sponsor-30363D?style=for-the-badge&logo=GitHub-Sponsors&logoColor=#EA4AAA)](https://github.com/sponsors/insality) [![Ko-Fi](https://img.shields.io/badge/Ko--fi-F16061?style=for-the-badge&logo=ko-fi&logoColor=white)](https://ko-fi.com/insality) [![BuyMeACoffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ffdd00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://www.buymeacoffee.com/insality)
 
 
-# Disclaimer
-
-The library in **development stage**. May be not fully tested and README may be not full. If you have any questions, please, create an issue. This library is an adoptation of [Token](https://github.com/Insality/defold-eva/blob/master/eva/modules/token.lua) module from my [Defold-Eva](https://github.com/Insality/defold-eva) library.
-
-
 # Token
 
 **Token** - library designed for the [Defold](https://defold.com/) game engine to manage countable items such as money, lives, and other numeric values. This library provides a robust and flexible system for handling various token-related operations, including creation, management, and restoration of token values.
