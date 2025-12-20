@@ -23,8 +23,6 @@ Used to manage all countable items in the game.
 - [get_lot_price](#get_lot_price)
 - [get_token_config](#get_token_config)
 - [init](#init)
-- [start_timer](#start_timer)
-- [update](#update)
 ## Fields
 
 - [on_token_change](#on_token_change)
@@ -245,22 +243,6 @@ Initialize the token system with token configuration (optional)
 	- `[tokens_config_or_path]` *(string|table<string, token.token_config_data>|nil)*: Lua table with tokens or path to JSON config. Example: "/resources/tokens.json"
 	- `[config_group]` *(string|nil)*: Optional config group (defaults to "default")
 
-### start_timer
-
----
-```lua
-token.start_timer()
-```
-
-### update
-
----
-```lua
-token.update()
-```
-
-Update the token system
-
 
 ## Fields
 <a name="on_token_change"></a>
@@ -274,7 +256,4 @@ Update the token system
 
 <a name="containers"></a>
 - **containers** (_table_): Active container instances
-
-<a name="timer_id"></a>
-- **timer_id** (_nil_): Timer handle for update loop
 
