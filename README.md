@@ -199,6 +199,21 @@ For any issues, questions, or suggestions, please [create an issue](https://gith
 </a>
 
 
+## Changelog
+<details>
+
+### **V1**
+- Initial Release
+
+### **V2**
+- Tests, refactor, docs, annotations
+
+### **V3**
+-- Refactor containers and token API
+-- Update docs
+
+</details>
+
 ## ❤️ Support project ❤️
 
 Your donation helps me stay engaged in creating valuable projects for **Defold**. If you appreciate what I'm doing, please consider supporting me!
