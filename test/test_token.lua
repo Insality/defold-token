@@ -7,20 +7,14 @@ return function()
 
 		local TEST_CONTAINER_ID = "test_container"
 		local CONFIG_TOKEN = {
-			tokens = {
-				level = {
-					default = 1,
-					min = 1,
-					max = 80
-				}
-			}
+				level = { default = 1, min = 1, max = 80 }
 		}
 
 	before(function()
 		token = require("token.token") --[[@as token]]
 		token.reset_state()
 		token.init()
-		token.register_tokens(CONFIG_TOKEN.tokens)
+		token.register_tokens(CONFIG_TOKEN)
 		test_container = token.container(TEST_CONTAINER_ID)
 
 		mock_time.mock()

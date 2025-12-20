@@ -71,11 +71,9 @@ After that, select `Project ▸ Fetch Libraries` to update [library dependencies
 local token = require("token.token")
 
 token.init({
-	tokens = {
-		["money"] = { default = 100, min = 0, max = 10000 },
-		["exp"] = {},
-		["level"] = { default = 1, min = 1, max = 100 },
-	}
+	["money"] = { default = 100, min = 0, max = 10000 },
+	["exp"] = {},
+	["level"] = { default = 1, min = 1, max = 100 },
 })
 
 token.get_state() -- get the current state for save/load
@@ -85,7 +83,9 @@ token.container("wallet"):add("exp", 100)
 token.container("wallet"):add("level", 1)
 token.container("wallet"):pay("money", 100)
 
-token.container("skill"):get("damage")
+-- Configs is not required to operate with tokens
+token.container("skill"):add("damage", 100) -- Return token instance
+token.container("skill"):get("damage") -- Return 100
 ```
 
 ## API Reference
@@ -158,6 +158,21 @@ container:get_visual(token_id)
 -- Info
 container:get_total_sum(token_id)
 container:get_token_config(token_id)
+
+-- Restore Config
+container:set_restore_config(token_id, config)
+container:get_restore_config(token_id)
+container:set_restore_config_enabled(token_id, is_enabled)
+container:is_restore_config_enabled(token_id)
+container:remove_restore_config(token_id)
+container:reset_restore_timer(token_id)
+container:get_time_to_restore(token_id)
+
+-- Infinity Config
+container:add_infinity_time(token_id, seconds)
+container:is_infinity(token_id)
+container:get_infinity_time(token_id)
+container:set_infinity_time(token_id, time)
 ```
 
 ### API Reference

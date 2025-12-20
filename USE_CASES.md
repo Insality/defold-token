@@ -28,7 +28,7 @@ local token = require("token.token")
 
 local function save_token_state()
 	-- Save a token.state table as you wish
-	save_token_state(token.state)
+	save_token_state(token.get_state())
 end
 
 
@@ -45,11 +45,6 @@ function init(self)
 end
 ```
 
-
-## How to use restore tokens config
-
-
-## How to use infinity tokens config
 
 
 ## Example: wallet container
@@ -98,14 +93,14 @@ wallet:add("gold", 100, "task_completed")
 This config can be a Lua file, for example placed at `/game/tokens.lua` and look like this:
 
 ```lua
----@class game.tokens
+-- /game/tokens.lua
 return {
-	gold = {},
-	exp = {},
-	token_basic = { default = 8, min = 0, max = 10000 },
-	token_interaction = { default = 0, min = 0, max = 10000 },
-	damage_power = { default = 1 },
-	damage_crit = { default = 0.05 },
+	["gold"] = {},
+	["exp"] = {},
+	["token_basic"] = { default = 8, min = 0, max = 10000 },
+	["token_interaction"] = { default = 0, min = 0, max = 10000 },
+	["damage_power"] = { default = 1 },
+	["damage_crit"] = { default = 0.05 },
 }
 ```
 
@@ -147,23 +142,23 @@ token.init(require("game.tokens"))
 -- Register token groups (collections of tokens for rewards/prices)
 token.register_token_groups({
 	starter_pack = {
-		gold = 100,
-		exp = 50,
+		["gold"] = 100,
+		["exp"] = 50,
 	},
 	starter_pack_price = {
-		money = 5,
+		["money"] = 5,
 	},
 	daily_reward = {
-		gold = 10,
-		token_basic = 5,
+		["gold"] = 10,
+		["token_basic"] = 5,
 	},
 })
 
 -- Register lots (price + reward pairs)
 token.register_lots({
 	shop_item_1 = {
-		price = "starter_pack_price",  -- group id
-		reward = "starter_pack",        -- group id
+		["price"] = "starter_pack_price",  -- group id
+		["reward"] = "starter_pack",        -- group id
 	},
 })
 ```

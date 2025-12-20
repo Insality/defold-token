@@ -28,6 +28,17 @@
 - [set_group](#set_group)
 - [pay_group](#pay_group)
 - [is_enough_group](#is_enough_group)
+- [set_restore_config](#set_restore_config)
+- [get_restore_config](#get_restore_config)
+- [set_restore_config_enabled](#set_restore_config_enabled)
+- [is_restore_config_enabled](#is_restore_config_enabled)
+- [remove_restore_config](#remove_restore_config)
+- [reset_restore_timer](#reset_restore_timer)
+- [get_time_to_restore](#get_time_to_restore)
+- [add_infinity_time](#add_infinity_time)
+- [is_infinity](#is_infinity)
+- [get_infinity_time](#get_infinity_time)
+- [set_infinity_time](#set_infinity_time)
 ## Fields
 
 - [id](#id)
@@ -417,6 +428,162 @@ Check if container has enough tokens to pay for a token group
 - **Returns:**
 	- `True` *(boolean)*: if enough tokens are available, false otherwise
 
+### set_restore_config
+
+---
+```lua
+container:set_restore_config(token_id, config)
+```
+
+Set restore configuration for a token
+If config already exists, only updates timer/value/max parameters, preserving restore state
+
+- **Parameters:**
+	- `token_id` *(string)*:
+	- `config` *(token.token_restore_param)*: Configuration with timer, optional value (default 1), and optional max
+
+### get_restore_config
+
+---
+```lua
+container:get_restore_config(token_id)
+```
+
+Get restore configuration for a token
+
+- **Parameters:**
+	- `token_id` *(string)*:
+
+- **Returns:**
+	- `` *(token.token_restore_config|nil)*:
+
+### set_restore_config_enabled
+
+---
+```lua
+container:set_restore_config_enabled(token_id, is_enabled)
+```
+
+Enable or disable restore for a token
+
+- **Parameters:**
+	- `token_id` *(string)*:
+	- `is_enabled` *(boolean)*:
+
+### is_restore_config_enabled
+
+---
+```lua
+container:is_restore_config_enabled(token_id)
+```
+
+Check if restore is enabled for a token
+
+- **Parameters:**
+	- `token_id` *(string)*:
+
+- **Returns:**
+	- `` *(boolean|nil)*:
+
+### remove_restore_config
+
+---
+```lua
+container:remove_restore_config(token_id)
+```
+
+Remove restore configuration for a token
+
+- **Parameters:**
+	- `token_id` *(string)*:
+
+- **Returns:**
+	- `True` *(boolean)*: if config was removed, false otherwise
+
+### reset_restore_timer
+
+---
+```lua
+container:reset_restore_timer(token_id)
+```
+
+Reset restore configuration timer for a token (start from current time)
+Use this if you want to force reset the restore timer
+
+- **Parameters:**
+	- `token_id` *(string)*:
+
+### get_time_to_restore
+
+---
+```lua
+container:get_time_to_restore(token_id)
+```
+
+Get time remaining until next restore
+
+- **Parameters:**
+	- `token_id` *(string)*:
+
+- **Returns:**
+	- `` *(number|nil)*: Seconds until next restore, or nil if no restore config
+
+### add_infinity_time
+
+---
+```lua
+container:add_infinity_time(token_id, seconds)
+```
+
+Add time to a token's infinity state
+
+- **Parameters:**
+	- `token_id` *(string)*:
+	- `seconds` *(number)*: Number of seconds to add
+
+### is_infinity
+
+---
+```lua
+container:is_infinity(token_id)
+```
+
+Check if a token is currently in infinity state
+
+- **Parameters:**
+	- `token_id` *(string)*:
+
+- **Returns:**
+	- `` *(boolean)*:
+
+### get_infinity_time
+
+---
+```lua
+container:get_infinity_time(token_id)
+```
+
+Get remaining time in seconds for a token's infinity state
+
+- **Parameters:**
+	- `token_id` *(string)*:
+
+- **Returns:**
+	- `` *(number)*: Seconds remaining (0 if not in infinity state)
+
+### set_infinity_time
+
+---
+```lua
+container:set_infinity_time(token_id, time)
+```
+
+Set the time for a token's infinity state
+
+- **Parameters:**
+	- `token_id` *(string)*:
+	- `time` *(number)*: End time for infinity state in seconds
+
 
 ## Fields
 <a name="id"></a>
@@ -433,37 +600,4 @@ Check if container has enough tokens to pay for a token group
 
 <a name="on_token_restore_change"></a>
 - **on_token_restore_change** (_event_): Per-container restore change event
-
-<a name="set_restore_config"></a>
-- **set_restore_config** (_function_):  Integrate token_restore methods
-
-<a name="get_restore_config"></a>
-- **get_restore_config** (_function_)
-
-<a name="set_restore_config_enabled"></a>
-- **set_restore_config_enabled** (_function_)
-
-<a name="is_restore_config_enabled"></a>
-- **is_restore_config_enabled** (_function_)
-
-<a name="remove_restore_config"></a>
-- **remove_restore_config** (_function_)
-
-<a name="reset_restore_timer"></a>
-- **reset_restore_timer** (_function_)
-
-<a name="get_time_to_restore"></a>
-- **get_time_to_restore** (_function_)
-
-<a name="add_infinity_time"></a>
-- **add_infinity_time** (_function_):  Integrate token_infinity methods
-
-<a name="is_infinity"></a>
-- **is_infinity** (_function_)
-
-<a name="get_infinity_time"></a>
-- **get_infinity_time** (_function_)
-
-<a name="set_infinity_time"></a>
-- **set_infinity_time** (_function_)
 

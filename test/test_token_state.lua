@@ -8,13 +8,7 @@ return function()
 		local SAVED_STATE = nil
 		local WALLET_ID = "wallet"
 		local CONFIG_TOKEN = {
-			tokens = {
-				level = {
-					default = 1,
-					min = 1,
-					max = 80
-				}
-			}
+				level = { default = 1, min = 1, max = 80 }
 		}
 
 	before(function()
@@ -29,7 +23,7 @@ return function()
 		end
 
 		token.init()
-		token.register_tokens(CONFIG_TOKEN.tokens)
+		token.register_tokens(CONFIG_TOKEN)
 		wallet = token.container(WALLET_ID)
 
 		mock_time.mock()
