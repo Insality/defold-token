@@ -2,7 +2,7 @@
 ![](media/logo.png)
 
 [![GitHub release (latest by date)](https://img.shields.io/github/v/tag/insality/defold-token?style=for-the-badge&label=Release)](https://github.com/Insality/defold-token/tags)
-[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/insality/defold-token/ci-workflow.yml?branch=master&style=for-the-badge)](https://github.com/Insality/defold-token/actions)
+[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/insality/defold-token/ci_workflow.yml?branch=main&style=for-the-badge)](https://github.com/Insality/defold-token/actions)
 [![codecov](https://img.shields.io/codecov/c/github/Insality/defold-token?style=for-the-badge)](https://codecov.io/gh/Insality/defold-token)
 
 [![Github-sponsors](https://img.shields.io/badge/sponsor-30363D?style=for-the-badge&logo=GitHub-Sponsors&logoColor=#EA4AAA)](https://github.com/sponsors/insality) [![Ko-Fi](https://img.shields.io/badge/Ko--fi-F16061?style=for-the-badge&logo=ko-fi&logoColor=white)](https://ko-fi.com/insality) [![BuyMeACoffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ffdd00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://www.buymeacoffee.com/insality)
