@@ -2,7 +2,6 @@
 
 This section provides examples of how to use the `token` module.
 
-
 ## Save token state
 
 You need to save the token state and load it before the `token.init` function.
@@ -45,8 +44,6 @@ function init(self)
 end
 ```
 
-
-
 ## Example: wallet container
 
 Often we need to create a container for a player's wallet or other "global" container.
@@ -61,7 +58,7 @@ local const = require("game.const")
 token.container(const.WALLET_ID):add(const.ITEM.GOLD, 100, const.REASON.TASK_COMPLETED)
 ```
 
-or you can create a module file which will be used as a container itself
+or you can create a Lua module file which will be used as a container itself
 
 ```lua
 -- /game/wallet.lua
@@ -120,9 +117,9 @@ wallet:add("gold", 100, "task_completed")
 local tokens = require("game.tokens")
 
 -- If gold is not exists, it will be an syntax error here
+-- (token container can accept both string token id or token config)
 wallet:add(tokens.gold, 100, "task_completed")
 
--- (token container can accept both string token id or token config)
 
 -- You still can use any token id as a string, the token config is not required to count as a valid token id
 wallet:add("token_without_config", 100, "task_completed")
@@ -141,14 +138,14 @@ token.init(require("game.tokens"))
 
 -- Register token groups (collections of tokens for rewards/prices)
 token.register_token_groups({
-	starter_pack = {
+	["starter_pack_price"] = {
+		["money"] = 5,
+	},
+	["starter_pack"] = {
 		["gold"] = 100,
 		["exp"] = 50,
 	},
-	starter_pack_price = {
-		["money"] = 5,
-	},
-	daily_reward = {
+	["daily_reward"] = {
 		["gold"] = 10,
 		["token_basic"] = 5,
 	},
@@ -156,9 +153,9 @@ token.register_token_groups({
 
 -- Register lots (price + reward pairs)
 token.register_lots({
-	shop_item_1 = {
-		["price"] = "starter_pack_price",  -- group id
-		["reward"] = "starter_pack",        -- group id
+	["shop_item_1"] = {
+		price = "starter_pack_price", -- group id
+		reward = "starter_pack", -- group id
 	},
 })
 ```

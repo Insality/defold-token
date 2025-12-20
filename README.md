@@ -71,7 +71,7 @@ token.init({
 	["level"] = { default = 1, min = 1, max = 100 },
 })
 
-token.get_state() -- get the current state for save/load
+local state = token.get_state() -- get the current state for save/load
 token.set_state(state) -- set the state for save/load
 
 token.container("wallet"):add("exp", 100)
@@ -172,7 +172,9 @@ container:set_infinity_time(token_id, time)
 
 ### API Reference
 
-Read the [API Reference](API_REFERENCE.md) file to see the full API documentation for the module.
+Read the API Reference:
+- [token](api/token_api.md) - the main module
+- [container](api/container_api.md)
 
 
 ## Use Cases
