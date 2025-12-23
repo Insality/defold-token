@@ -15,7 +15,7 @@ local logger = require("token.internal.token_logger")
 ---@class token.token_restore_param
 ---@field timer number Timer in seconds for restore
 ---@field value number|nil Value for restore per timer. Default is 1
----@field max number|nil Max accumulated value for restore. Nil means no limit
+---@field max number|nil Max accumulated value for restore while offline. Nil means no limit
 
 local M = {}
 
