@@ -126,7 +126,120 @@ wallet:add("token_without_config", 100, "task_completed")
 ```
 
 
+## Events and subscribing
+
+There are **container events** (on a specific container) and **global events** (on `token`). This section focuses on container events; use them to refresh UI, play effects, or log changes for one container (e.g. the wallet).
+
+Container events (e.g. for `wallet = token.container("wallet")`):
+
+- `wallet.on_token_change` — when the actual token amount changes. Callback: `(token_id, amount, reason)`
+- `wallet.on_token_visual_change` — when the displayed (visual) amount changes. Callback: `(token_id, amount)`
+- `wallet.on_token_restore_change` — when restore config for a token changes. Callback: `(token_id, config)`
+
+Example: update the gold label when the wallet’s gold changes:
+
+```lua
+local token = require("token.token")
+local wallet = token.container("wallet")
+
+wallet.on_token_change:subscribe(function(token_id, amount, reason)
+	if token_id == "gold" then
+		update_gold_label(amount)
+	end
+end)
+
+wallet:add("gold", 100, "reward")
+-- Callback runs with token_id "gold", amount 100, reason "reward"
+```
+
+Global events also exist if you need to react to changes in any container:
+
+- `token.on_token_change` — callback `(container_id, token_id, amount, reason)`
+- `token.on_token_visual_change` — callback `(container_id, token_id, amount)`
+- `token.on_token_restore_change` — callback `(container_id, token_id, config)`
+
+Use container events when you care only about one container (e.g. the wallet); use global events when you listen to multiple containers.
+
+
+## Visual value and sync
+
+Token amounts can be split into “real” value (saved, used for logic) and “visual” value (what you show). The visual value can lag behind (e.g. animate from 100 → 150). Use `add_visual` to drive the displayed value; use `sync_visual` only when you want to snap visual to real without firing visual events (e.g. UI restart).
+
+- `container:get(token_id)` - real amount
+- `container:get_visual(token_id)` - value to display (real amount minus visual debt)
+- `container:add(token_id, amount, reason, visual_later)` - pass `true` as fourth argument to change real value but not visual (adds “visual debt”)
+- `container:add_visual(token_id, delta)` - change only what is shown (positive = show more, negative = show less). Fires `on_token_visual_change`.
+- `container:sync_visual(token_id)` - make visual equal to real (clears visual debt); returns the delta that was synced. Use for UI restart or when you want to snap the display to the real value in one go (e.g. no incremental animation).
+
+Example: grant 50 gold, animate the counter from current to +50 using `add_visual`, and subscribe to the wallet’s visual changes:
+
+```lua
+local token = require("token.token")
+local wallet = token.container("wallet")
+
+wallet.on_token_visual_change:subscribe(function(token_id, amount)
+	if token_id == "gold" then
+		animate_gold_label_to(amount)
+	end
+end)
+
+-- Real amount increased by 50, visual unchanged (e.g. still 100)
+wallet:add("gold", 50, "quest", true)
+
+-- For example you have a particle system, which animate flying tokens to the gold panel
+-- And you can increase a visual amount each time the particle system fly in the panel
+token_particles:animate("gold", 50, function(amount)
+	wallet:add_visual("gold", amount)
+end)
+```
+
+Example: on UI restart, snap the displayed value to the real value:
+
+```lua
+local wallet = token.container("wallet")
+
+function on_wallet_ui_show()
+	wallet:sync_visual("gold")
+	wallet:sync_visual("gems")
+	set_label("gold", wallet:get_visual("gold"))
+	set_label("gems", wallet:get_visual("gems"))
+end
+```
+
+
+## Token config groups
+
+Token configs (default, min, max) can be registered per **config group**. A container gets its configs from a specific group. So the same token id (e.g. `"money"`) can have different defaults and limits depending on whether the container uses a group or the default group.
+
+Lookup order: container’s config group → `"default"` group → empty config.
+
+Example: register `"money"` with default 100 only for the `"user_wallet"` group. A wallet created with that group starts with 100 money; a container with no group (default) has no config for `"money"` (empty config, default 0):
+
+```lua
+local token = require("token.token")
+
+token.register_tokens({
+	["money"] = { default = 100, min = 0, max = 99999 }
+}, "user_wallet")
+
+local wallet = token.container("wallet", "user_wallet")
+local other = token.container("other")
+
+wallet:get("money")
+-- 100 (from "user_wallet" group)
+
+other:get("money")
+-- 0 (no config in default group; token created with empty config)
+```
+
+When creating a container, pass the config group as the second argument: `token.container(container_id, config_group)`. If omitted, the container uses the `"default"` group. When calling `token.init(tokens_config_or_path, config_group)`, the given config is registered into that group (defaults to `"default"`).
+
+
 ## Token Groups and Lots
+
+Token Groups - is a collections of tokens to be managed together. For example, a reward from a quest or chest.
+
+Token Lots - is a pair of token groups, one for the price and one for the reward. For example, a shop item.
 
 Token groups and lots should be registered separately using dedicated functions:
 

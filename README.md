@@ -17,6 +17,7 @@
 
 - **Token Management** - Create, delete, and manage tokens within containers.
 - **Container Management** - Create, delete, and manage token containers.
+- **Visual Management** - Control the displayed amount separately from the actual value for smooth UI animations.
 - **Callbacks** - Customizable callbacks for token changes.
 - **Token Groups** - Support for grouped token operations.
 - **Token Restoration** - Configurable restoration mechanics for tokens.
