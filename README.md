@@ -65,6 +65,9 @@ After that, select `Project ▸ Fetch Libraries` to update [library dependencies
 
 
 ## Basic Usage
+
+In Token library, you create a container which contains tokens.
+
 ```lua
 local token = require("token.token")
 
@@ -77,13 +80,15 @@ token.init({
 local state = token.get_state() -- get the current state for save/load
 token.set_state(state) -- set the state for save/load
 
-token.container("wallet"):add("exp", 100)
-token.container("wallet"):add("level", 1)
-token.container("wallet"):pay("money", 100)
+token.container("wallet"):add("exp", 100) -- Will be 100, due the default value is 0
+token.container("wallet"):add("level", 1) -- Will be 2, due the default value is 1
+token.container("wallet"):pay("money", 100) -- Will be 0, due the default value is 100
+token.container("wallet"):add("gems", 20) -- Token configs is not required to operate with tokens
 
 -- Configs is not required to operate with tokens
 token.container("skill"):add("damage", 100) -- Return token instance
 token.container("skill"):get("damage") -- Return 100
+token.container("skill"):set("crit_chance", 0.1) -- Set crit chance to 10%
 ```
 
 ## API Reference
