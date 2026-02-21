@@ -176,6 +176,11 @@ container:add_infinity_time(token_id, seconds)
 container:is_infinity(token_id)
 container:get_infinity_time(token_id)
 container:set_infinity_time(token_id, time)
+
+-- Events
+container.on_token_change -- (token_id, amount, reason)
+container.on_token_visual_change -- (token_id, amount)
+container.on_token_restore_change -- (token_id, restore_config)
 ```
 
 ### API Reference
