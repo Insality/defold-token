@@ -10,12 +10,13 @@ local logger = require("token.internal.token_logger")
 ---@field disabled_time number|nil
 ---@field timer number Timer in seconds for restore
 ---@field value number Value for restore per timer
----@field max number|nil Max accumulated value for restore offline
+---@field max number|nil Cap on total value (restore never exceeds this) and max gain per offline batch. Nil means no limit
+---@field was_at_restore_max boolean|nil Internal: true when last update saw value >= max (used to reset timer when dropping below max)
 
 ---@class token.token_restore_param
 ---@field timer number Timer in seconds for restore
 ---@field value number|nil Value for restore per timer. Default is 1
----@field max number|nil Max accumulated value for restore while offline. Nil means no limit
+---@field max number|nil Cap on total value and max gain per offline batch. Nil means no limit
 
 local M = {}
 
@@ -210,14 +211,25 @@ function M.update_restore(container, token_id, config)
 		return
 	end
 
+	if config.max and token:get() >= config.max then
+		config.was_at_restore_max = true
+		config.last_restore_time = current_time
+		return
+	end
+
+	if config.was_at_restore_max then
+		config.last_restore_time = current_time
+		config.was_at_restore_max = false
+	end
+
 	local elapsed = current_time - config.last_restore_time
 	if elapsed >= config.timer then
 		local amount = math.floor(elapsed / config.timer)
 		local need_to_add = amount * config.value
 
-		-- Cap to max restore amount
+		-- Cap so total never exceeds config.max and at most config.max per batch
 		if config.max then
-			need_to_add = math.min(need_to_add, config.max)
+			need_to_add = math.min(need_to_add, config.max - token:get())
 		end
 
 		token:add(need_to_add)

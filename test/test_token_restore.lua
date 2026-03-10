@@ -45,10 +45,10 @@ return function()
 			token.update()
 			assert(test_container:get("energy") == 2)
 
-			-- max 20 restore
+			-- max 20 is total cap; from 2 we add at most 18
 			set_time(60 * 40)
 			token.update()
-			assert(test_container:get("energy") == 22)
+			assert(test_container:get("energy") == 20)
 		end)
 
 
@@ -138,21 +138,19 @@ return function()
 			assert(wallet:get("energy") == 2)
 			set_time(19)
 			token.update()
-			-- elapsed 14 secs, need to add 2 * 2
-			assert(wallet:get("energy") == 6)
+			-- elapsed 14 secs, need to add 4 but cap by headroom (5-2)=3 -> total 5
+			assert(wallet:get("energy") == 5)
 			set_time(20)
 			token.update()
-			assert(wallet:get("energy") == 8)
+			assert(wallet:get("energy") == 5)
 			set_time(100)
 			token.update()
-			assert(wallet:get("energy") == 13)
-			-- elapsed 100 secs. want to add 16 * 2, but max restore 5, max value 15
+			assert(wallet:get("energy") == 5)
 			set_time(200)
-			-- TODO: HACK, while now we can't setup max token value in restore config
 			wallet:set("energy", 15)
 			assert(wallet:get("energy") == 15)
 
-			-- time return back (hackers?)
+			-- above restore max: no restore until below 5
 			set_time(0)
 			token.update()
 			assert(wallet:get("energy") == 15)
@@ -160,9 +158,12 @@ return function()
 			wallet:add("energy", -5)
 			set_time(5)
 			token.update()
-			assert(wallet:get("energy") == 12)
+			assert(wallet:get("energy") == 10)
 			wallet:set("energy", 0)
-			set_time(55) -- elapsed 50 secods, want to add 10 * 2, but max restore 5
+			set_time(55)
+			token.update()
+			assert(wallet:get("energy") == 0, "Timer starts at first update after drop; no restore yet")
+			set_time(70) -- 3 intervals of 5s (value 2 each) to reach cap 5
 			token.update()
 			assert(wallet:get("energy") == 5)
 		end)
@@ -274,6 +275,35 @@ return function()
 			-- From time 100 to 200 = 100 seconds
 			-- With new timer=50, that's 2 intervals: 10 * 2 = 20
 			assert(wallet:get("stamina") == 25, "Stamina should be 5 + 20")
+		end)
+
+
+		it("Should start timer from moment value drops below restore max", function()
+			wallet:set_restore_config("energy", {
+				timer = 5,
+				value = 1,
+				max = 5
+			})
+			set_time(0)
+			token.update()
+			assert(wallet:get("energy") == 0)
+			set_time(25)
+			token.update()
+			assert(wallet:get("energy") == 5, "At restore max")
+			set_time(30)
+			token.update()
+			assert(wallet:get("energy") == 5)
+			wallet:pay("energy", 1)
+			assert(wallet:get("energy") == 4, "Dropped below max")
+			set_time(34)
+			token.update()
+			assert(wallet:get("energy") == 4, "Timer starts when we first see below max; 4s not enough")
+			set_time(38)
+			token.update()
+			assert(wallet:get("energy") == 4, "Still 4s since timer started")
+			set_time(39)
+			token.update()
+			assert(wallet:get("energy") == 5, "Restore after full 5s from timer start")
 		end)
 
 

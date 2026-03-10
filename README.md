@@ -222,8 +222,12 @@ For any issues, questions, or suggestions, please [create an issue](https://gith
 - Tests, refactor, docs, annotations
 
 ### **V3**
--- Refactor containers and token API
--- Update docs
+- Refactor containers and token API
+- Update docs
+
+### **V4**
+- Restore config `max`: now acts as both cap on total value (restore never exceeds it) and max gain per offline batch. No restore when current >= max
+- When token value drops below restore max (e.g. after spend), restore timer starts from that moment
 
 </details>
 
