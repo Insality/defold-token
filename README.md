@@ -229,6 +229,9 @@ For any issues, questions, or suggestions, please [create an issue](https://gith
 - Restore config `max`: now acts as both cap on total value (restore never exceeds it) and max gain per offline batch. No restore when current >= max
 - When token value drops below restore max (e.g. after spend), restore timer starts from that moment
 
+### **V5**
+- Fix token total sum history tracking
+
 </details>
 
 ## ❤️ Support project ❤️

@@ -59,11 +59,14 @@ function M:_create_token(token_id, initial_amount)
 
 	local token_config = config.get_token_config(token_id, self.config_group)
 	local amount = initial_amount or self._state_data.tokens[token_id] or token_config.default or 0
-	local token = value.create(token_config, amount)
+	local total_sum = self._state_data.history and self._state_data.history[token_id]
+	local token = value.create(token_config, amount, total_sum)
 
 	-- Register callbacks
 	token:on_change(function(token_instance, delta, reason)
 		self._state_data.tokens[token_id] = token_instance:get()
+		self._state_data.history = self._state_data.history or {}
+		self._state_data.history[token_id] = token_instance:get_total_sum()
 		-- Fire per-container event
 		self.on_token_change:trigger(token_id, token_instance:get(), reason)
 	end)

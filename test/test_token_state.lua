@@ -38,7 +38,9 @@ return function()
 		it("Should save token values on game save/load. Part1", function()
 			assert(wallet:get("ruby") == 0)
 			wallet:add("ruby", 100)
-			assert(wallet:get("ruby") == 100)
+			wallet:pay("ruby", 30)
+			assert(wallet:get("ruby") == 70)
+			assert(wallet:get_total_sum("ruby") == 100)
 
 			local state = token.get_state()
 			local is_ok, encoded = pcall(json.encode, state)
@@ -49,7 +51,8 @@ return function()
 
 
 		it("Should save token values on game save/load. Part2", function()
-			assert(wallet:get("ruby") == 100)
+			assert(wallet:get("ruby") == 70)
+			assert(wallet:get_total_sum("ruby") == 100)
 			SAVED_STATE = nil
 		end)
 	end)

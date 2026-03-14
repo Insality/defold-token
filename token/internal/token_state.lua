@@ -5,8 +5,9 @@
 ---@field containers table<string, token.container_data>
 
 ---@class token.container_data
----@field tokens table<string, number>
----@field restore_config table<string, token.token_restore_config>|nil
+---@field tokens table<string, number> Table of token amounts
+---@field history table<string, number>|nil Table of token total sums
+---@field restore_config table<string, token.token_restore_config>|nil Restore config
 ---@field infinity_timers table<string, number>|nil
 
 local M = {}
@@ -79,6 +80,7 @@ function M.clear_container(container_id)
 	local container = state.containers[container_id]
 	if container then
 		container.tokens = {}
+		container.history = nil
 		container.restore_config = nil
 		container.infinity_timers = nil
 	end

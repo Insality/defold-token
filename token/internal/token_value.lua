@@ -14,13 +14,14 @@ local M = {}
 ---Create new token value instance
 ---@param config token.token_config_data Token configuration
 ---@param amount number Initial amount
+---@param total_sum number|nil Restored total sum (optional)
 ---@return token.value
-function M.create(config, amount)
+function M.create(config, amount, total_sum)
 	---@type token.value
 	local instance = setmetatable({}, { __index = M })
 	instance.config = config or {}
 	instance.amount = amount or instance.config.default or 0
-	instance.total_sum = 0
+	instance.total_sum = total_sum or 0
 	instance.visual_credit = 0
 
 	return instance
