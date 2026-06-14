@@ -120,23 +120,8 @@ end
 function M.clear_container(container_id)
 	local existing_container = M.containers[container_id]
 	if existing_container then
-		local config_group = existing_container.config_group
 		state.clear_container(container_id)
-		existing_container.on_token_change:clear()
-		existing_container.on_token_visual_change:clear()
-		existing_container.on_token_restore_change:clear()
-
-		-- Recreate container to clear runtime data
-		local state_data = state.get_container(container_id)
-		if state_data then
-			local new_container = container.create(container_id, config_group, state_data)
-			M.containers[container_id] = new_container
-
-			-- Subscribe to container events to trigger global events
-			new_container.on_token_change:subscribe(M.on_token_change, container_id)
-			new_container.on_token_visual_change:subscribe(M.on_token_visual_change, container_id)
-			new_container.on_token_restore_change:subscribe(M.on_token_restore_change, container_id)
-		end
+		existing_container._tokens = {}
 	else
 		logger:warn("Can't clear non existing container", container_id)
 	end

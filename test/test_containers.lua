@@ -35,11 +35,27 @@ return function()
 			assert(test_container:get("energy") == 10)
 
 			token.clear_container(TEST_CONTAINER_ID)
-			test_container = token.container(TEST_CONTAINER_ID)
 			assert(test_container:get("money") == 0)
 			assert(test_container:get("energy") == 0)
 
 			assert(token.is_container_exist(TEST_CONTAINER_ID))
+		end)
+
+		it("Should keep container subscribers after clear", function()
+			local counter = 0
+
+			test_container.on_token_change:subscribe(function()
+				counter = counter + 1
+			end)
+
+			test_container:add("money", 10)
+			assert(counter == 1)
+
+			token.clear_container(TEST_CONTAINER_ID)
+			assert(test_container:get("money") == 0)
+
+			test_container:add("money", 5)
+			assert(counter == 2)
 		end)
 
 		it("Should delete container", function()
