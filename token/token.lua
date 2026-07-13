@@ -66,6 +66,7 @@ end
 ---@param new_state token.state
 function M.set_state(new_state)
 	state.set_state(new_state)
+	M.containers = {}
 end
 
 

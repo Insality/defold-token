@@ -71,22 +71,22 @@ function M.render_container_page(token, container_id, properties_panel)
 		end)
 	end)
 
-	local container = token.get_state().containers[container_id]
+	local token_container = token.container(container_id)
+	local tokens = token_container:get_many()
 	-- Show tokens
-	if container.tokens then
+	if next(tokens) then
 		properties_panel:add_text(function(text)
 			text:set_text_property("Tokens")
 			text:set_text_value("")
 		end)
 
-		for token_id, _ in pairs(container.tokens) do
+		for token_id, _ in pairs(tokens) do
 			-- Token actions
 			properties_panel:add_button(function(button)
-				local amount = token.container(container_id):get(token_id)
+				local amount = token_container:get(token_id)
 				button:set_text_property(token_id)
 				button:set_text_button(amount)
 				button.button.on_click:subscribe(function()
-					local token_container = token.container(container_id)
 					M.render_token_details_page(token_container, token_id, properties_panel)
 				end)
 			end)

@@ -76,6 +76,7 @@ function M:_create_token(token_id, initial_amount)
 		self.on_token_visual_change:trigger(token_id, token_instance:get_visual())
 	end)
 
+	self._state_data.tokens[token_id] = token:get()
 	self._tokens[token_id] = token
 	return token
 end
