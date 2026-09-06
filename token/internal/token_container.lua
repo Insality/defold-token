@@ -8,13 +8,21 @@ local config = require("token.internal.token_config")
 local restore = require("token.internal.token_restore")
 local infinity = require("token.internal.token_infinity")
 
+---@class token.container.event.on_token_change: event
+---@field trigger fun(_, token_id: string, amount: number, reason: string|nil, delta: number)
+---@field subscribe fun(_, callback: fun(token_id: string, amount: number, reason: string|nil, delta: number), _)
+
+---@class token.container.event.on_token_visual_change: event
+---@field trigger fun(_, token_id: string, amount: number, delta: number)
+---@field subscribe fun(_, callback: fun(token_id: string, amount: number, delta: number), _)
+
 ---@class token.container
 ---@field id string Container unique identifier
 ---@field config_group string|nil Configuration group name
 ---@field _state_data token.container_data Reference to state data
 ---@field _tokens table<string, token.value> Runtime token instances
----@field on_token_change event Per-container change event
----@field on_token_visual_change event Per-container visual change event
+---@field on_token_change token.container.event.on_token_change Per-container change event. Callback: fun(token_id: string, amount: number, reason: string|nil, delta: number)
+---@field on_token_visual_change token.container.event.on_token_visual_change Per-container visual change event. Callback: fun(token_id: string, amount: number, delta: number)
 ---@field on_token_restore_change event Per-container restore change event
 local M = {}
 
@@ -68,12 +76,12 @@ function M:_create_token(token_id, initial_amount)
 		self._state_data.history = self._state_data.history or {}
 		self._state_data.history[token_id] = token_instance:get_total_sum()
 		-- Fire per-container event
-		self.on_token_change:trigger(token_id, token_instance:get(), reason)
+		self.on_token_change:trigger(token_id, token_instance:get(), reason, delta)
 	end)
 
 	token:on_visual_change(function(token_instance, delta)
 		-- Fire per-container event
-		self.on_token_visual_change:trigger(token_id, token_instance:get_visual())
+		self.on_token_visual_change:trigger(token_id, token_instance:get_visual(), delta)
 	end)
 
 	self._state_data.tokens[token_id] = token:get()

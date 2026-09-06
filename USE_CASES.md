@@ -132,9 +132,11 @@ There are **container events** (on a specific container) and **global events** (
 
 Container events (e.g. for `wallet = token.container("wallet")`):
 
-- `wallet.on_token_change` — when the actual token amount changes. Callback: `(token_id, amount, reason)`
-- `wallet.on_token_visual_change` — when the displayed (visual) amount changes. Callback: `(token_id, amount)`
+- `wallet.on_token_change` — when the actual token amount changes. Callback: `(token_id, amount, reason, delta)`
+- `wallet.on_token_visual_change` — when the displayed (visual) amount changes. Callback: `(token_id, amount, delta)`
 - `wallet.on_token_restore_change` — when restore config for a token changes. Callback: `(token_id, config)`
+
+`amount` is the new total. `delta` is the applied change after min/max (positive on gain, negative on spend).
 
 Example: update the gold label when the wallet’s gold changes:
 
@@ -142,20 +144,21 @@ Example: update the gold label when the wallet’s gold changes:
 local token = require("token.token")
 local wallet = token.container("wallet")
 
-wallet.on_token_change:subscribe(function(token_id, amount, reason)
+wallet.on_token_change:subscribe(function(token_id, amount, reason, delta)
 	if token_id == "gold" then
 		update_gold_label(amount)
+		show_floating_text(delta)
 	end
 end)
 
 wallet:add("gold", 100, "reward")
--- Callback runs with token_id "gold", amount 100, reason "reward"
+-- Callback runs with token_id "gold", amount 100, reason "reward", delta 100
 ```
 
 Global events also exist if you need to react to changes in any container:
 
-- `token.on_token_change` — callback `(container_id, token_id, amount, reason)`
-- `token.on_token_visual_change` — callback `(container_id, token_id, amount)`
+- `token.on_token_change` — callback `(container_id, token_id, amount, reason, delta)`
+- `token.on_token_visual_change` — callback `(container_id, token_id, amount, delta)`
 - `token.on_token_restore_change` — callback `(container_id, token_id, config)`
 
 Use container events when you care only about one container (e.g. the wallet); use global events when you listen to multiple containers.
@@ -177,7 +180,7 @@ Example: grant 50 gold, animate the counter from current to +50 using `add_visua
 local token = require("token.token")
 local wallet = token.container("wallet")
 
-wallet.on_token_visual_change:subscribe(function(token_id, amount)
+wallet.on_token_visual_change:subscribe(function(token_id, amount, delta)
 	if token_id == "gold" then
 		animate_gold_label_to(amount)
 	end

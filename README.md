@@ -38,10 +38,10 @@ Open your `game.project` file and add the following line to the dependencies fie
 https://github.com/Insality/defold-event/archive/refs/tags/14.zip
 ```
 
-**[Defold Token](https://github.com/Insality/defold-token/archive/refs/tags/7.zip)**
+**[Defold Token](https://github.com/Insality/defold-token/archive/refs/tags/8.zip)**
 
 ```
-https://github.com/Insality/defold-token/archive/refs/tags/7.zip
+https://github.com/Insality/defold-token/archive/refs/tags/8.zip
 ```
 
 After that, select `Project ▸ Fetch Libraries` to update [library dependencies]((https://defold.com/manuals/libraries/#setting-up-library-dependencies)). This happens automatically whenever you open a project so you will only need to do this if the dependencies change without re-opening the project.
@@ -123,8 +123,8 @@ token.get_token_config(token_id)
 token.set_logger([logger_instance])
 
 -- Events
-token.on_token_change -- (container_id, token_id, amount, reason)
-token.on_token_visual_change -- (container_id, token_id, amount)
+token.on_token_change -- (container_id, token_id, amount, reason, delta)
+token.on_token_visual_change -- (container_id, token_id, amount, delta)
 token.on_token_restore_change -- (container_id, token_id, restore_config)
 ```
 
@@ -178,8 +178,8 @@ container:get_infinity_time(token_id)
 container:set_infinity_time(token_id, time)
 
 -- Events
-container.on_token_change -- (token_id, amount, reason)
-container.on_token_visual_change -- (token_id, amount)
+container.on_token_change -- (token_id, amount, reason, delta)
+container.on_token_visual_change -- (token_id, amount, delta)
 container.on_token_restore_change -- (token_id, restore_config)
 ```
 
@@ -237,6 +237,9 @@ For any issues, questions, or suggestions, please [create an issue](https://gith
 
 ### **V7**
 - Fix: Store default values for tokens when container is created
+
+### **V8**
+- Pass applied `delta` as last argument to `on_token_change` and `on_token_visual_change` events
 
 </details>
 

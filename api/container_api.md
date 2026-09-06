@@ -594,10 +594,10 @@ Set the time for a token's infinity state
 - **config_group** (_string_): Configuration group name
 
 <a name="on_token_change"></a>
-- **on_token_change** (_event_): Per-container change event
+- **on_token_change** (_event_): Per-container change event. Callback: fun(token_id: string, amount: number, reason: string|nil, delta: number)
 
 <a name="on_token_visual_change"></a>
-- **on_token_visual_change** (_event_): Per-container visual change event
+- **on_token_visual_change** (_event_): Per-container visual change event. Callback: fun(token_id: string, amount: number, delta: number)
 
 <a name="on_token_restore_change"></a>
 - **on_token_restore_change** (_event_): Per-container restore change event

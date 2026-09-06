@@ -11,18 +11,18 @@ local restore = require("token.internal.token_restore")
 ---@class token
 local M = {}
 
----Triggers when token amount was changed
----Callback is fun(container_id: string, token_id: string, amount: number, reason: string|nil)
+---Triggers when token amount was changed. `amount` is the new total, `delta` is the applied change
+---Callback is fun(container_id: string, token_id: string, amount: number, reason: string|nil, delta: number)
 ---@class token.event.on_token_change: event
----@field trigger fun(_, container_id: string, token_id: string, amount: number, reason: string|nil)
----@field subscribe fun(_, callback: fun(container_id: string, token_id: string, amount: number, reason: string|nil), _)
+---@field trigger fun(_, container_id: string, token_id: string, amount: number, reason: string|nil, delta: number)
+---@field subscribe fun(_, callback: fun(container_id: string, token_id: string, amount: number, reason: string|nil, delta: number), _)
 M.on_token_change = event.create()
 
----Triggers when token visual amount was changed
----Callback is fun(container_id: string, token_id: string, amount: number)
+---Triggers when token visual amount was changed. `amount` is the new visual total, `delta` is the applied visual change
+---Callback is fun(container_id: string, token_id: string, amount: number, delta: number)
 ---@class token.event.on_token_visual_change: event
----@field trigger fun(_, container_id: string, token_id: string, amount: number)
----@field subscribe fun(_, callback: fun(container_id: string, token_id: string, amount: number), _)
+---@field trigger fun(_, container_id: string, token_id: string, amount: number, delta: number)
+---@field subscribe fun(_, callback: fun(container_id: string, token_id: string, amount: number, delta: number), _)
 M.on_token_visual_change = event.create()
 
 ---Triggers when token restore config was changed

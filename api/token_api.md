@@ -246,10 +246,10 @@ Initialize the token system with token configuration (optional)
 
 ## Fields
 <a name="on_token_change"></a>
-- **on_token_change** (_unknown_): Triggers when token amount was changed
+- **on_token_change** (_unknown_): Triggers when token amount was changed. Callback: fun(container_id: string, token_id: string, amount: number, reason: string|nil, delta: number)
 
 <a name="on_token_visual_change"></a>
-- **on_token_visual_change** (_unknown_): Triggers when token visual amount was changed
+- **on_token_visual_change** (_unknown_): Triggers when token visual amount was changed. Callback: fun(container_id: string, token_id: string, amount: number, delta: number)
 
 <a name="on_token_restore_change"></a>
 - **on_token_restore_change** (_unknown_): Triggers when token restore config was changed (for backward compatibility)
