@@ -43,4 +43,60 @@ return function()
 			SAVED_STATE = nil
 		end)
 	end)
+
+	describe("Token Default Seeding", function()
+		local token ---@type token
+
+		before(function()
+			token = require("token.token")
+			token.reset_state()
+			token.init()
+		end)
+
+		it("Should put default 0 tokens into container on create", function()
+			token.register_tokens({
+				is_payer = { default = 0, min = 0, max = 1 },
+				level = { default = 1, min = 1, max = 80 },
+			}, "player")
+
+			local player = token.container("player", "player")
+			local tokens = player:get_many()
+
+			assert(tokens.is_payer == 0, "is_payer should be 0, got " .. tostring(tokens.is_payer))
+			assert(tokens.level == 1, "level should be 1, got " .. tostring(tokens.level))
+			assert(token.get_state().containers.player.tokens.is_payer == 0)
+			assert(token.get_state().containers.player.tokens.level == 1)
+		end)
+
+		it("Should seed default group tokens including 0 without calling get", function()
+			token.register_tokens({
+				flag = { default = 0, min = 0, max = 1 },
+				money = { default = 100 },
+			})
+
+			local wallet = token.container("wallet")
+			local tokens = wallet:get_many()
+
+			assert(tokens.flag == 0, "flag should be 0, got " .. tostring(tokens.flag))
+			assert(tokens.money == 100, "money should be 100, got " .. tostring(tokens.money))
+		end)
+
+		it("Should not overwrite saved values with defaults", function()
+			token.register_tokens({
+				is_payer = { default = 0, min = 0, max = 1 },
+			}, "player")
+
+			token.set_state({
+				containers = {
+					player = {
+						tokens = { is_payer = 1 }
+					}
+				}
+			})
+
+			local player = token.container("player", "player")
+			assert(player:get("is_payer") == 1)
+			assert(player:get_many().is_payer == 1)
+		end)
+	end)
 end

@@ -38,10 +38,10 @@ Open your `game.project` file and add the following line to the dependencies fie
 https://github.com/Insality/defold-event/archive/refs/tags/14.zip
 ```
 
-**[Defold Token](https://github.com/Insality/defold-token/archive/refs/tags/8.zip)**
+**[Defold Token](https://github.com/Insality/defold-token/archive/refs/tags/9.zip)**
 
 ```
-https://github.com/Insality/defold-token/archive/refs/tags/8.zip
+https://github.com/Insality/defold-token/archive/refs/tags/9.zip
 ```
 
 After that, select `Project ▸ Fetch Libraries` to update [library dependencies]((https://defold.com/manuals/libraries/#setting-up-library-dependencies)). This happens automatically whenever you open a project so you will only need to do this if the dependencies change without re-opening the project.
@@ -240,6 +240,9 @@ For any issues, questions, or suggestions, please [create an issue](https://gith
 
 ### **V8**
 - Pass applied `delta` as last argument to `on_token_change` and `on_token_visual_change` events
+
+### **V9**
+- Create all registered tokens from the container config group on create, including `default = 0`
 
 </details>
 

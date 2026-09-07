@@ -51,6 +51,12 @@ function M.create(container_id, config_group, state_data)
 		instance:_create_token(token_id, amount)
 	end
 
+	-- Create registered tokens with their defaults (including default = 0)
+	local group_configs = config.token_configs[config_group or "default"] or {}
+	for token_id in pairs(group_configs) do
+		instance:_create_token(token_id)
+	end
+
 	return instance
 end
 
