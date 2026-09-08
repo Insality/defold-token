@@ -243,6 +243,7 @@ For any issues, questions, or suggestions, please [create an issue](https://gith
 
 ### **V9**
 - Create all registered tokens from the container config group on create, including `default = 0`
+- Fix named config groups on save/load: store `config_group` on container state and restore it in `token.init()`
 
 </details>
 

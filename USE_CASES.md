@@ -6,6 +6,8 @@ This section provides examples of how to use the `token` module.
 
 You need to save the token state and load it before the `token.init` function.
 
+If you use named config groups (`register_tokens(tokens, config_group)`), call `register_tokens` **before** `token.init()`. The config group is stored on the container state and restored on init; containers without a stored group use `"default"`.
+
 For this you can use [Defold Saver](https://github.com/Insality/defold-saver) module.
 
 ```lua
@@ -235,7 +237,9 @@ other:get("money")
 -- 0 (no config in default group; token created with empty config)
 ```
 
-When creating a container, pass the config group as the second argument: `token.container(container_id, config_group)`. If omitted, the container uses the `"default"` group. When calling `token.init(tokens_config_or_path, config_group)`, the given config is registered into that group (defaults to `"default"`).
+When creating a container, pass the config group as the second argument: `token.container(container_id, config_group)`. If omitted, the container uses the `"default"` group (or the group already stored on that container's state). Passing `config_group` again on `token.container` overrides the stored group so it stays current. When calling `token.init(tokens_config_or_path, config_group)`, the given config is registered into that group (defaults to `"default"`).
+
+Call `register_tokens(..., config_group)` **before** `token.init()`. The container stores `config_group` in its state and `init` restores from that field. Container id and config group id are independent.
 
 
 ## Token Groups and Lots

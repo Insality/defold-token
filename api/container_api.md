@@ -5,6 +5,7 @@
 ## Functions
 
 - [create](#create)
+- [set_config_group](#set_config_group)
 - [token](#token)
 - [get_state_data](#get_state_data)
 - [add](#add)
@@ -77,6 +78,18 @@ Create a new container instance
 
 - **Returns:**
 	- `` *(token.container)*:
+
+### set_config_group
+
+---
+```lua
+container:set_config_group(config_group)
+```
+
+Switch config group on an existing container. Amounts stay; min/max/default come from the new group.
+
+- **Parameters:**
+	- `config_group` *(string)*:
 
 ### token
 

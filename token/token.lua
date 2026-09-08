@@ -78,13 +78,18 @@ function M.set_logger(logger_instance)
 end
 
 
----Get container instance, create if it doesn't exist
+---Get container instance, create if it doesn't exist.
+---If `config_group` is passed, it overrides the stored group on that container.
 ---@param container_id string Unique identifier for the container
 ---@param config_group string|nil Optional configuration group
 ---@return token.container Container instance
 function M.container(container_id, config_group)
-	if M.containers[container_id] then
-		return M.containers[container_id]
+	local existing = M.containers[container_id]
+	if existing then
+		if config_group and existing.config_group ~= config_group then
+			existing:set_config_group(config_group)
+		end
+		return existing
 	end
 
 	-- Create state data if it doesn't exist
@@ -93,8 +98,13 @@ function M.container(container_id, config_group)
 		state_data = state.create_container(container_id)
 	end
 
+	local group = config_group or state_data.config_group
+	if group then
+		state_data.config_group = group
+	end
+
 	-- Create container instance
-	local new_container = container.create(container_id, config_group, state_data)
+	local new_container = container.create(container_id, group, state_data)
 	M.containers[container_id] = new_container
 
 	-- Subscribe to container events to trigger global events
@@ -138,6 +148,8 @@ end
 
 
 ---Register tokens in the token system
+---Call this before `token.init()` when using a named config group.
+---Saved containers restore with the `config_group` stored on their state.
 ---@param tokens table<string, token.token_config_data>|string Table mapping token IDs to token config data
 ---@param config_group string|nil Optional config group (defaults to "default")
 function M.register_tokens(tokens, config_group)
@@ -208,6 +220,8 @@ end
 
 
 ---Initialize the token system with token configuration (optional)
+---Register named config groups with `register_tokens(tokens, config_group)` before calling `init`.
+---Saved containers are restored with the `config_group` stored on their state; otherwise `"default"`.
 ---@param tokens_config_or_path table<string, token.token_config_data>|string|nil Lua table with tokens or path to JSON config. Example: "/resources/tokens.json"
 ---@param config_group string|nil Optional config group (defaults to "default")
 function M.init(tokens_config_or_path, config_group)
@@ -218,8 +232,8 @@ function M.init(tokens_config_or_path, config_group)
 	M.containers = {}
 
 	-- Create container instances for all state data
-	for container_id in pairs(state.get_all_containers()) do
-		M.container(container_id)
+	for container_id, data in pairs(state.get_all_containers()) do
+		M.container(container_id, data.config_group)
 	end
 
 	if M.timer_id then

@@ -46,18 +46,38 @@ function M.create(container_id, config_group, state_data)
 	instance.on_token_visual_change = event.create()
 	instance.on_token_restore_change = event.create()
 
-	-- Load existing tokens from state
-	for token_id, amount in pairs(state_data.tokens) do
-		instance:_create_token(token_id, amount)
-	end
-
-	-- Create registered tokens with their defaults (including default = 0)
-	local group_configs = config.token_configs[config_group or "default"] or {}
-	for token_id in pairs(group_configs) do
-		instance:_create_token(token_id)
-	end
+	instance:_rebuild_tokens()
 
 	return instance
+end
+
+
+---Rebuild runtime token instances from state using the current config group
+---@private
+function M:_rebuild_tokens()
+	self._tokens = {}
+
+	for token_id, amount in pairs(self._state_data.tokens) do
+		self:_create_token(token_id, amount)
+	end
+
+	local group_configs = config.token_configs[self.config_group or "default"] or {}
+	for token_id in pairs(group_configs) do
+		self:_create_token(token_id)
+	end
+end
+
+
+---Switch config group on an existing container. Amounts stay; min/max/default come from the new group.
+---@param config_group string
+function M:set_config_group(config_group)
+	self.config_group = config_group
+	self._state_data.config_group = config_group
+	self:_rebuild_tokens()
+
+	for _, token_value in pairs(self._tokens) do
+		token_value:set(token_value:get())
+	end
 end
 
 

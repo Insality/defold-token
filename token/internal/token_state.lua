@@ -9,6 +9,7 @@
 ---@field history table<string, number>|nil Table of token total sums
 ---@field restore_config table<string, token.token_restore_config>|nil Restore config
 ---@field infinity_timers table<string, number>|nil
+---@field config_group string|nil Configuration group used by this container
 
 local M = {}
 

@@ -230,6 +230,88 @@ return function()
 		end)
 
 
+		it("should restore saved containers with stored config group", function()
+			token.reset_state()
+			token.register_tokens({
+				gold = { min = 0, max = 10 }
+			}, "wallet")
+
+			token.set_state({
+				containers = {
+					inventory = { tokens = { gold = 7 }, config_group = "wallet" },
+					wallet = { tokens = { gold = 3 } },
+				}
+			})
+
+			token.init()
+
+			assert(token.timer_id ~= nil, "Restore timer should start in init")
+
+			local inventory = token.container("inventory")
+			assert(inventory:get("gold") == 7, "Saved inventory gold should stay")
+			assert(inventory:set("gold", -5) == 0)
+			assert(inventory:set("gold", 99) == 10)
+			assert(inventory.config_group == "wallet")
+
+			local wallet = token.container("wallet")
+			assert(wallet:get("gold") == 3, "Saved wallet gold should stay")
+			assert(wallet.config_group == nil, "Container without stored config_group should use default")
+			assert(wallet:set("gold", -5) == -5, "Matching container id must not imply config group")
+			assert(wallet:set("gold", 99) == 99, "Matching container id must not imply config group")
+		end)
+
+
+		it("should persist config group on the container state", function()
+			token.reset_state()
+			token.init()
+			token.register_tokens({
+				gold = { min = 0, max = 10 }
+			}, "user_wallet")
+
+			local wallet = token.container("wallet", "user_wallet")
+			assert(wallet.config_group == "user_wallet")
+			assert(token.get_state().containers.wallet.config_group == "user_wallet")
+
+			local saved = token.get_state()
+			token.reset_state()
+			token.register_tokens({
+				gold = { min = 0, max = 10 }
+			}, "user_wallet")
+			token.set_state(saved)
+			token.init()
+
+			local restored = token.container("wallet")
+			assert(restored.config_group == "user_wallet")
+			assert(restored:set("gold", 99) == 10)
+		end)
+
+
+		it("should override config group on later container() call", function()
+			token.reset_state()
+			token.init()
+			token.register_tokens({
+				gold = { min = 0, max = 10 }
+			}, "wallet")
+			token.register_tokens({
+				gold = { min = 0, max = 100 }
+			}, "premium")
+
+			local wallet = token.container("wallet", "wallet")
+			wallet:set("gold", 10)
+			assert(wallet:set("gold", 99) == 10)
+
+			local same = token.container("wallet", "premium")
+			assert(same == wallet)
+			assert(wallet.config_group == "premium")
+			assert(token.get_state().containers.wallet.config_group == "premium")
+			assert(wallet:get("gold") == 10, "Saved amount should stay")
+			assert(wallet:set("gold", 99) == 99)
+
+			token.container("wallet")
+			assert(wallet.config_group == "premium", "Call without group should not reset it")
+		end)
+
+
 		it("should use updated token group in container operations", function()
 			token.register_tokens({
 				["gold"] = { default = 0 },

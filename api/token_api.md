@@ -85,7 +85,9 @@ Customize the logging mechanism used by Token Module. You can use **Defold Log**
 token.container(container_id, [config_group])
 ```
 
-Get container instance, create if it doesn't exist
+Get container instance, create if it doesn't exist.
+
+The chosen `config_group` is stored on the container state and used again on `token.init()`. Passing `config_group` again overrides the stored group.
 
 - **Parameters:**
 	- `container_id` *(string)*: Unique identifier for the container
@@ -140,7 +142,9 @@ Check if container exists
 token.register_tokens(tokens, [config_group])
 ```
 
-Register tokens in the token system
+Register tokens in the token system.
+
+Call this before `token.init()` when using a named config group. Saved containers restore with the `config_group` stored on their state.
 
 - **Parameters:**
 	- `tokens` *(string|table<string, token.token_config_data>)*: Table mapping token IDs to token config data
@@ -237,7 +241,9 @@ Get token configuration
 token.init([tokens_config_or_path], [config_group])
 ```
 
-Initialize the token system with token configuration (optional)
+Initialize the token system with token configuration (optional).
+
+Register named config groups with `register_tokens(tokens, config_group)` before calling `init`. Saved containers are restored with the `config_group` stored on their state; otherwise `"default"`.
 
 - **Parameters:**
 	- `[tokens_config_or_path]` *(string|table<string, token.token_config_data>|nil)*: Lua table with tokens or path to JSON config. Example: "/resources/tokens.json"
